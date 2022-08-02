@@ -4,7 +4,7 @@ Bookstore Manager é uma aplicação web criado com Java Springboot. Seu objetiv
 
 ## 🚀 Começando
 
-Você pode ver o projeto acessando as URLs, entretanto vale dizer que há um limite de ações a se realizar devido ao site ser feito com ferramentas gratuitas. Algumas funções podem não serem realizadas devido a utilização simultânea por muitos usuários.
+Você pode ver o projeto acessando as URLs, entretanto vale dizer que há um limite de ações a se realizar devido ao site ser feito com ferramentas gratuitas. Algumas funções podem não ser realizadas devido a utilização simultânea por muitos usuários.
 
 ### 🔧 Acessar projeto.
 
