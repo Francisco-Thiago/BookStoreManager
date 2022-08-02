@@ -2,7 +2,11 @@ package com.franciscothiago.bookstoremanager.entity.publisher;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Column;
 import java.time.LocalDate;
 
 @Data

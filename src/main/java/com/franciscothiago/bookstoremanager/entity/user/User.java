@@ -3,7 +3,13 @@ package com.franciscothiago.bookstoremanager.entity.user;
 import com.franciscothiago.bookstoremanager.entity.user.enums.Gender;
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.EnumType;
+import javax.persistence.Id;
+import javax.persistence.Enumerated;
+import javax.persistence.Column;
 import java.time.LocalDate;
 
 @Data
