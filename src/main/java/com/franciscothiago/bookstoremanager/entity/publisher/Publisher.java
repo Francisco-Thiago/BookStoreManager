@@ -1,5 +1,6 @@
 package com.franciscothiago.bookstoremanager.entity.publisher;
 
+import com.franciscothiago.bookstoremanager.entity.auditable.Auditable;
 import com.franciscothiago.bookstoremanager.entity.book.Book;
 import lombok.Data;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class Publisher {
+public class Publisher extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
