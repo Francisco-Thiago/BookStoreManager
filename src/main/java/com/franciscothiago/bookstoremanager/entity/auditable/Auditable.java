@@ -3,7 +3,7 @@ package com.franciscothiago.bookstoremanager.entity.auditable;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
@@ -21,7 +21,7 @@ public class Auditable {
     @Column(nullable = false)
     protected LocalDate createdData;
 
-    @LastModifiedBy
+    @LastModifiedDate
     @Column
     protected LocalDate lastModifiedData;
 }
