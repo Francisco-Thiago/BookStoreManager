@@ -1,13 +1,11 @@
 package com.franciscothiago.bookstoremanager.entity.publisher;
 
+import com.franciscothiago.bookstoremanager.entity.book.Book;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Column;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -25,4 +23,7 @@ public class Publisher {
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDate foundationDate;
+
+    @OneToMany(mappedBy = "publisher", fetch = FetchType.LAZY)
+    private List<Book> books;
 }

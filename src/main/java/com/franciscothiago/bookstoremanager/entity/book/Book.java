@@ -2,7 +2,9 @@ package com.franciscothiago.bookstoremanager.entity.book;
 
 import com.franciscothiago.bookstoremanager.entity.author.Author;
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
+
+import com.franciscothiago.bookstoremanager.entity.publisher.Publisher;
+import com.franciscothiago.bookstoremanager.entity.user.User;
 
 import javax.persistence.Id;
 import javax.persistence.Entity;
@@ -34,4 +36,10 @@ public class Book {
 
     @ManyToOne(cascade = {CascadeType.MERGE})
     private Author author;
+
+    @ManyToOne(cascade = {CascadeType.MERGE})
+    private Publisher publisher;
+
+    @ManyToOne(cascade = {CascadeType.MERGE})
+    private User user;
 }

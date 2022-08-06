@@ -1,16 +1,12 @@
 package com.franciscothiago.bookstoremanager.entity.user;
 
+import com.franciscothiago.bookstoremanager.entity.book.Book;
 import com.franciscothiago.bookstoremanager.entity.user.enums.Gender;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.EnumType;
-import javax.persistence.Id;
-import javax.persistence.Enumerated;
-import javax.persistence.Column;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -41,4 +37,7 @@ public class User {
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDate birthDate;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Book> books;
 }
