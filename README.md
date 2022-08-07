@@ -22,6 +22,14 @@ O projeto atualmente está em construção.
 * [Java](https://www.oracle.com/java/technologies/javase/jdk18-archive-downloads.html) - Java (18)
 * [PostgreSQL](https://www.postgresql.org/download/windows/) - Banco de dados padrão
 
+## 🧠 Aprendido
+
+- Base do SpringBoot.
+- Arquitetura MVC.
+- Dependências Maven.
+- Relação com banco de dados via JPA.
+- Construção de uma API REST com java.
+
 ## 📌 Versão
 
 ```
