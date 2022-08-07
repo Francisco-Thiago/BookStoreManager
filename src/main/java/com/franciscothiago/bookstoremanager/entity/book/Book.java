@@ -1,6 +1,5 @@
 package com.franciscothiago.bookstoremanager.entity.book;
 
-import com.franciscothiago.bookstoremanager.entity.auditable.Auditable;
 import lombok.Data;
 
 import com.franciscothiago.bookstoremanager.entity.publisher.Publisher;
@@ -16,7 +15,7 @@ import javax.persistence.CascadeType;
 
 @Data
 @Entity
-public class Book extends Auditable {
+public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

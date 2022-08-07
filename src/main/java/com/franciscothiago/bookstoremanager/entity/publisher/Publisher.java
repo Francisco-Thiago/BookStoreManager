@@ -1,16 +1,14 @@
 package com.franciscothiago.bookstoremanager.entity.publisher;
 
-import com.franciscothiago.bookstoremanager.entity.auditable.Auditable;
 import com.franciscothiago.bookstoremanager.entity.book.Book;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @Entity
-public class Publisher extends Auditable {
+public class Publisher{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +19,6 @@ public class Publisher extends Auditable {
 
     @Column(nullable = false, unique = true, length = 100)
     private String code;
-
-    @Column(nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDate foundationDate;
 
     @OneToMany(mappedBy = "publisher", fetch = FetchType.LAZY)
     private List<Book> books;

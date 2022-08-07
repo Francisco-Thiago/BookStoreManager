@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class publisherDTO {
+public class PublisherDTO {
 
     private Long id;
 
@@ -26,9 +26,5 @@ public class publisherDTO {
     @NotEmpty
     @Size(max = 50)
     private String code;
-
-    @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate foundationDate;
 
 }

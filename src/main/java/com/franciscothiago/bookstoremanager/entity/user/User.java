@@ -1,17 +1,16 @@
 package com.franciscothiago.bookstoremanager.entity.user;
 
-import com.franciscothiago.bookstoremanager.entity.auditable.Auditable;
 import com.franciscothiago.bookstoremanager.entity.book.Book;
 import com.franciscothiago.bookstoremanager.entity.user.enums.Gender;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+
 import java.util.List;
 
 @Data
 @Entity
-public class User extends Auditable {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,8 +35,8 @@ public class User extends Auditable {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDate birthDate;
+//    @Column(nullable = false, columnDefinition = "TIMESTAMP")
+//    private LocalDate birthDate;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Book> books;
