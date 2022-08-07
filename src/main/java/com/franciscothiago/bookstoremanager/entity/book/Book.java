@@ -1,7 +1,6 @@
 package com.franciscothiago.bookstoremanager.entity.book;
 
 import com.franciscothiago.bookstoremanager.entity.auditable.Auditable;
-import com.franciscothiago.bookstoremanager.entity.author.Author;
 import lombok.Data;
 
 import com.franciscothiago.bookstoremanager.entity.publisher.Publisher;
@@ -34,9 +33,6 @@ public class Book extends Auditable {
 
     @Column(columnDefinition = "integer default 0")
     private int chapters;
-
-    @ManyToOne(cascade = {CascadeType.MERGE})
-    private Author author;
 
     @ManyToOne(cascade = {CascadeType.MERGE})
     private Publisher publisher;
