@@ -22,13 +22,6 @@ public class PublisherService {
         this.publisherRepository = publisherRepository;
     }
 
-    public List<PublisherDTO> findAll() {
-        return publisherRepository.findAll()
-                .stream()
-                .map(publisherMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
     public PublisherDTO create(PublisherDTO publisherDTO) {
         verifyIfExists(publisherDTO.getName(), publisherDTO.getCode());
 
@@ -37,10 +30,20 @@ public class PublisherService {
         return publisherMapper.toDTO(createdPublisher);
     }
 
+    public List<PublisherDTO> findAll() {
+        return publisherRepository.findAll()
+                .stream()
+                .map(publisherMapper::toDTO)
+                .collect(Collectors.toList());
+    }
     public PublisherDTO findById(Long id) {
         return publisherRepository.findById(id)
                 .map(publisherMapper::toDTO)
                 .orElseThrow(() -> new PublisherNotFoundException(id));
+    }
+
+    public void deleteById(Long id) {
+        publisherRepository.deleteById(id);
     }
 
     private void verifyIfExists(String name, String code) {
