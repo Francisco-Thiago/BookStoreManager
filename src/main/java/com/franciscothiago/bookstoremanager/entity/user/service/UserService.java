@@ -36,7 +36,7 @@ public class UserService {
     }
 
     private void verifyIfExists(String email, String username) {
-        Optional<User> foundUser = userRepository.findByEMailOrUsername(email, username);
+        Optional<User> foundUser = userRepository.findByEmailOrUsername(email, username);
 
         if(foundUser.isPresent()) {
             throw new UserAlreadyExistsException(email, username);

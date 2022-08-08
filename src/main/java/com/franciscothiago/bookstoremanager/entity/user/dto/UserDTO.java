@@ -28,7 +28,7 @@ public class UserDTO {
     @NotNull
     @NotEmpty
     @Max(128)
-    private Integer age;
+    private int age;
 
     @NotNull
     @NotEmpty
