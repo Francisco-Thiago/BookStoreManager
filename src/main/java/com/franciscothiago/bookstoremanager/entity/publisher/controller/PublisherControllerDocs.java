@@ -33,4 +33,10 @@ public interface PublisherControllerDocs {
     })
     public List<PublisherDTO> getPublishers();
 
+    @ApiOperation(value = "Delete a publisher by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success, id deleted"),
+            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
+    })
+    public void delete(Long id);
 }
