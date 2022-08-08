@@ -25,8 +25,16 @@ public class UserService {
     public MessageDTO create(UserDTO userToCreateDTO) {
         verifyIfExists(userToCreateDTO.getEmail(), userToCreateDTO.getUsername());
 
-        User userToCreate = userMapper.toModel(userToCreateDTO);
-        User createdUser = userRepository.save(userToCreate);
+//        User userToCreate = userMapper.toModel(userToCreateDTO);
+        User user = new User();
+
+        user.setId( userToCreateDTO.getId() );
+        user.setName( userToCreateDTO.getName() );
+        user.setEmail( userToCreateDTO.getEmail() );
+        user.setUsername( userToCreateDTO.getUsername() );
+        user.setPassword( userToCreateDTO.getPassword() );
+
+        User createdUser = userRepository.save(user);
 
         String createdMessage = String.format("User %s with id %s successfully created", createdUser.getName(), createdUser.getId());
 
