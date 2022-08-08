@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
+
 @Api("Publishers management")
 public interface PublisherControllerDocs {
 
@@ -23,5 +25,12 @@ public interface PublisherControllerDocs {
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
     public PublisherDTO findById(Long id);
+
+    @ApiOperation(value = "Get all publishers")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "success Publisher creation"),
+            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
+    })
+    public List<PublisherDTO> getPublishers();
 
 }
