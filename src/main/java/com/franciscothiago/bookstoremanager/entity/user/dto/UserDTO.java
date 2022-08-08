@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -22,16 +23,6 @@ public class UserDTO {
 
     @NotNull
     @NotEmpty
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    @NotNull
-    @NotEmpty
-    @Max(128)
-    private Integer age;
-
-    @NotNull
-    @NotEmpty
     @Email
     private String email;
 
@@ -43,6 +34,6 @@ public class UserDTO {
     @NotEmpty
     private String password;
 
-//    @Column(nullable = false, columnDefinition = "TIMESTAMP")
-//    private LocalDate birthDate;
+    @Column(nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDate birthDate;
 }

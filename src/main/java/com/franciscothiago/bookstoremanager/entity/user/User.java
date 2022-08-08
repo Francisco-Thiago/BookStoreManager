@@ -6,10 +6,12 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @Entity
+@Table(name="users")
 public class User {
 
     @Id
@@ -18,13 +20,6 @@ public class User {
 
     @Column(nullable = false, length = 100)
     private String name;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private Gender gender;
-
-    @Column(nullable = false)
-    private int age;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -35,9 +30,4 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-//    @Column(nullable = false, columnDefinition = "TIMESTAMP")
-//    private LocalDate birthDate;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Book> books;
 }
