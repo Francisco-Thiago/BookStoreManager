@@ -17,12 +17,12 @@ public interface UserControllerDocs {
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
     @ApiOperation(value = "Create a new message")
-    public MessageDTO create(UserDTO userToCreateDTO);
+    MessageDTO create(UserDTO userToCreateDTO);
 
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success to get all users"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
     @ApiOperation(value = "Get all users")
-    public List<UserDTO> getUsers();
+    List<UserDTO> getUsers();
 }

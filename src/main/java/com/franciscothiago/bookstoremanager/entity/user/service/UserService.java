@@ -17,7 +17,7 @@ public class UserService {
 
     public final static UserMapper userMapper = UserMapper.INSTANCE;
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public UserService(UserRepository userRepository) {

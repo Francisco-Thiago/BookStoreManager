@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/api/v1/publishers")
 public class PublisherController implements PublisherControllerDocs{
 
-    private PublisherService publisherService;
+    private final PublisherService publisherService;
 
     @Autowired
     public PublisherController(PublisherService publisherService) {
