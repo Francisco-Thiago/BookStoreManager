@@ -25,4 +25,8 @@ public class PublisherDTO {
     @Size(max = 50)
     private String code;
 
+    @NotNull
+    @NotEmpty
+    @Size(max = 255)
+    private String city;
 }
