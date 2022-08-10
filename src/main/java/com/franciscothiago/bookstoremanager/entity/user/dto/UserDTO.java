@@ -1,13 +1,11 @@
 package com.franciscothiago.bookstoremanager.entity.user.dto;
 
-import com.franciscothiago.bookstoremanager.entity.user.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -24,16 +22,15 @@ public class UserDTO {
     @NotNull
     @NotEmpty
     @Email
+    @Size(max = 140)
     private String email;
 
     @NotNull
     @NotEmpty
-    private String username;
+    private String city;
 
     @NotNull
     @NotEmpty
-    private String password;
-
-    @Column(nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDate birthDate;
+    @Size(max = 140)
+    private String address;
 }
