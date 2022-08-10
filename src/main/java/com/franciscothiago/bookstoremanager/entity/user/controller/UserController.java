@@ -1,6 +1,5 @@
 package com.franciscothiago.bookstoremanager.entity.user.controller;
 
-import com.franciscothiago.bookstoremanager.entity.publisher.dto.PublisherDTO;
 import com.franciscothiago.bookstoremanager.entity.user.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.entity.user.dto.UserDTO;
 import com.franciscothiago.bookstoremanager.entity.user.service.UserService;
