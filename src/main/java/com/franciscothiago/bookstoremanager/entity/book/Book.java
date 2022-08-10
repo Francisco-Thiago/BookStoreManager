@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 import javax.persistence.CascadeType;
+import java.time.Year;
 
 @Data
 @Entity
@@ -25,17 +26,14 @@ public class Book {
     private String name;
 
     @Column(nullable = false)
-    private String isbn;
+    private String code;
 
-    @Column(columnDefinition = "integer default 0")
-    private int pages;
+    @Column(nullable = false, length = 140)
+    private String author;
 
-    @Column(columnDefinition = "integer default 0")
-    private int chapters;
+    @Column(nullable = false)
+    private Year releases;
 
     @ManyToOne(cascade = {CascadeType.MERGE})
     private Publisher publisher;
-
-    @ManyToOne(cascade = {CascadeType.MERGE})
-    private User user;
 }
