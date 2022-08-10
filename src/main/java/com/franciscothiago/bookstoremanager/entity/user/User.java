@@ -1,8 +1,11 @@
 package com.franciscothiago.bookstoremanager.entity.user;
 
+import com.franciscothiago.bookstoremanager.entity.book.Book;
+import com.franciscothiago.bookstoremanager.entity.rentals.Rentals;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -25,4 +28,6 @@ public class User {
     @Column(nullable = false, length = 140)
     private String address;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Rentals> rentals;
 }
