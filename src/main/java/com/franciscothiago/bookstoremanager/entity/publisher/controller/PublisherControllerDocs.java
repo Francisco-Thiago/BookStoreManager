@@ -16,26 +16,26 @@ public interface PublisherControllerDocs {
             @ApiResponse(code = 200, message = "success Publisher creation"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    public PublisherDTO create(PublisherDTO publisherDTO);
+    PublisherDTO create(PublisherDTO publisherDTO);
 
     @ApiOperation(value = "Find a result by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "success search"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    public PublisherDTO findById(Long id);
+    PublisherDTO findById(Long id);
 
     @ApiOperation(value = "Get all publishers")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "success Publisher creation"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    public List<PublisherDTO> getPublishers();
+    List<PublisherDTO> getPublishers();
 
     @ApiOperation(value = "Delete a publisher by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success, id deleted"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    public void delete(Long id);
+    void delete(Long id);
 }

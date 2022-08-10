@@ -20,6 +20,9 @@ public class Publisher{
     @Column(nullable = false, unique = true, length = 100)
     private String code;
 
+    @Column(nullable = false)
+    private String city;
+
     @OneToMany(mappedBy = "publisher", fetch = FetchType.LAZY)
     private List<Book> books;
 }
