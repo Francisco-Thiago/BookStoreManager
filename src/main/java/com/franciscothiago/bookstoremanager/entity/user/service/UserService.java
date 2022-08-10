@@ -1,6 +1,5 @@
 package com.franciscothiago.bookstoremanager.entity.user.service;
 
-import com.franciscothiago.bookstoremanager.entity.publisher.dto.PublisherDTO;
 import com.franciscothiago.bookstoremanager.entity.user.User;
 import com.franciscothiago.bookstoremanager.entity.user.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.entity.user.dto.UserDTO;
@@ -29,12 +28,6 @@ public class UserService {
         verifyIfExists(userToCreateDTO.getEmail());
         User userToCreate = userMapper.toModel(userToCreateDTO);
         User createdUser = userRepository.save(userToCreate);
-
-//        user.setId( userToCreateDTO.getId() );
-//        user.setName( userToCreateDTO.getName() );
-//        user.setEmail( userToCreateDTO.getEmail() );
-//        user.setUsername( userToCreateDTO.getUsername() );
-//        user.setPassword( userToCreateDTO.getPassword() );
 
         String createdMessage = String.format("User %s with id %s successfully created", createdUser.getName(), createdUser.getId());
 
