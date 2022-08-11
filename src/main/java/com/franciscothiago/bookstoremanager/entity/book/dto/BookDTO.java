@@ -17,6 +17,7 @@ public class BookDTO {
 
     private Long id;
 
+
     @NotNull
     @NotEmpty
     @Size(max = 255)

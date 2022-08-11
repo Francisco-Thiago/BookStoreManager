@@ -40,10 +40,12 @@ public class BookService {
     public BookDTO findById(Long id) {
         return bookRepository.findById(id)
                 .map(bookMapper::toDTO)
-                .orElseThrow(() -> new PublisherNotFoundException(id));
+                .orElseThrow(() -> new BookNotFoundException(id));
     }
 
     public void deleteById(Long id) {
         bookRepository.deleteById(id);
     }
+
+
 }
