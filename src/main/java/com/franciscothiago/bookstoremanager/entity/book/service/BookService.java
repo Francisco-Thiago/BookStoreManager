@@ -6,10 +6,12 @@ import com.franciscothiago.bookstoremanager.entity.book.mapper.BookMapper;
 import com.franciscothiago.bookstoremanager.entity.book.repository.BookRepository;
 import com.franciscothiago.bookstoremanager.entity.publisher.service.PublisherNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class BookService {
 
     public static final BookMapper bookMapper = BookMapper.INSTANCE;
