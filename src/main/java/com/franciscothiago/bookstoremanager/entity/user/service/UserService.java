@@ -1,5 +1,6 @@
 package com.franciscothiago.bookstoremanager.entity.user.service;
 
+import com.franciscothiago.bookstoremanager.entity.book.Book;
 import com.franciscothiago.bookstoremanager.entity.user.User;
 import com.franciscothiago.bookstoremanager.entity.user.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.entity.user.dto.UserDTO;
@@ -25,7 +26,7 @@ public class UserService {
     }
 
     public MessageDTO create(UserDTO userToCreateDTO) {
-        verifyIfExists(userToCreateDTO.getEmail());
+        verifyIfExists(userToCreateDTO.getId(), userToCreateDTO.getEmail());
         User userToCreate = userMapper.toModel(userToCreateDTO);
         User createdUser = userRepository.save(userToCreate);
 
@@ -41,6 +42,40 @@ public class UserService {
                 .stream()
                 .map(userMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+
+    public UserDTO update(Long id, UserDTO userDTO) {
+        User foundBook = verifyAndGetIfExists(id);
+        userDTO.setId(foundBook.getId());
+
+        if(!verifyIfEmailIsTheSame(foundBook.getEmail(), userDTO.getEmail())) {
+            verifyIfExists(userDTO.getEmail());
+            foundBook.setEmail(userDTO.getEmail());
+        }
+
+        userDTO.setEmail(foundBook.getEmail());
+        User userToCreate = userMapper.toModel(userDTO);
+        User createdUser = userRepository.save(userToCreate);
+
+        return userMapper.toDTO(createdUser);
+    }
+
+    private boolean verifyIfEmailIsTheSame(String previousEmail, String newEmail) {
+        return previousEmail.equals(newEmail);
+    }
+
+    private User verifyAndGetIfExists(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserAlreadyExistsException(id));
+    }
+
+    private void verifyIfExists(Long id, String email) {
+        Optional<User> foundUser = userRepository.findByIdOrEmail(id, email);
+
+        if(foundUser.isPresent()) {
+            throw new UserAlreadyExistsException(id, email);
+        }
     }
 
     private void verifyIfExists(String email) {

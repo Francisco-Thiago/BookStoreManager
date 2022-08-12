@@ -31,4 +31,9 @@ public class UserController implements UserControllerDocs{
     public MessageDTO create(@RequestBody @Valid UserDTO userToCreateDTO) {
         return userService.create(userToCreateDTO);
     }
+
+    @PutMapping("{id}")
+    public UserDTO update(@PathVariable Long id, @RequestBody @Valid UserDTO userDTO) {
+        return userService.update(id, userDTO);
+    }
 }
