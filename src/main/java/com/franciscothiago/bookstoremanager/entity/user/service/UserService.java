@@ -1,6 +1,6 @@
 package com.franciscothiago.bookstoremanager.entity.user.service;
 
-import com.franciscothiago.bookstoremanager.entity.book.Book;
+import com.franciscothiago.bookstoremanager.entity.book.service.BookNotFoundException;
 import com.franciscothiago.bookstoremanager.entity.user.User;
 import com.franciscothiago.bookstoremanager.entity.user.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.entity.user.dto.UserDTO;
@@ -84,5 +84,15 @@ public class UserService {
         if(foundUser.isPresent()) {
             throw new UserAlreadyExistsException(email);
         }
+    }
+
+    public UserDTO findById(Long id) {
+        return userRepository.findById(id)
+                .map(userMapper::toDTO)
+                .orElseThrow(() -> new BookNotFoundException(id));
+    }
+
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
     }
 }

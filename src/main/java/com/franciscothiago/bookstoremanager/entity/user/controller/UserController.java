@@ -26,6 +26,11 @@ public class UserController implements UserControllerDocs{
         return userService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public UserDTO getById(@PathVariable Long id) {
+        return userService.findById(id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public MessageDTO create(@RequestBody @Valid UserDTO userToCreateDTO) {
@@ -35,5 +40,11 @@ public class UserController implements UserControllerDocs{
     @PutMapping("{id}")
     public UserDTO update(@PathVariable Long id, @RequestBody @Valid UserDTO userDTO) {
         return userService.update(id, userDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        userService.deleteById(id);
     }
 }
