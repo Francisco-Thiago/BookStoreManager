@@ -1,5 +1,6 @@
 package com.franciscothiago.bookstoremanager.entity.rentals;
 
+import com.franciscothiago.bookstoremanager.entity.book.Book;
 import com.franciscothiago.bookstoremanager.entity.user.User;
 import lombok.Data;
 
@@ -22,6 +23,9 @@ public class Rentals {
 
     @Column(nullable = false)
     private LocalDate expirationDate;
+
+    @ManyToOne(cascade = {CascadeType.MERGE})
+    private Book book;
 
     @ManyToOne(cascade = {CascadeType.MERGE})
     private User user;
