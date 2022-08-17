@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +23,14 @@ public class BookStoreExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> responseEntityNotFoundException(EntityNotFoundException exception) {
+        return buildResponseEntity(
+                HttpStatus.NOT_FOUND,
+                exception.getMessage(),
+                Collections.singletonList(exception.getMessage())
+        );
+    }
+    @ExceptionHandler(DateTimeException.class)
+    public ResponseEntity<Object> handleDateTimeException(DateTimeException exception) {
         return buildResponseEntity(
                 HttpStatus.NOT_FOUND,
                 exception.getMessage(),
