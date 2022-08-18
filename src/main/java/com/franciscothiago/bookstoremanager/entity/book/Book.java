@@ -1,17 +1,13 @@
 package com.franciscothiago.bookstoremanager.entity.book;
 
+import com.franciscothiago.bookstoremanager.entity.rentals.Rentals;
 import lombok.Data;
 
 import com.franciscothiago.bookstoremanager.entity.publisher.Publisher;
 
-import javax.persistence.Id;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
-import javax.persistence.CascadeType;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -33,6 +29,10 @@ public class Book {
     @Column(nullable = false)
     private LocalDate releases;
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne
+    @JoinColumn(name = "publisher_id")
     private Publisher publisher;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Rentals> rentals;
 }

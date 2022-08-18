@@ -1,7 +1,7 @@
 package com.franciscothiago.bookstoremanager.entity.book.service;
 
 import com.franciscothiago.bookstoremanager.entity.book.Book;
-import com.franciscothiago.bookstoremanager.entity.book.dto.BookDTO;
+import com.franciscothiago.bookstoremanager.entity.book.dto.BookRequestDTO;
 import com.franciscothiago.bookstoremanager.entity.book.mapper.BookMapper;
 import com.franciscothiago.bookstoremanager.entity.book.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,31 +23,31 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public BookDTO create(BookDTO bookDTO) {
+    public BookRequestDTO create(BookRequestDTO bookRequestDTO) {
 
         // Regra de negócio para adicionar
         // - Um autor não pode ter o mesmo livro.
 
-        verifyIfExists(bookDTO.getId(), bookDTO.getName());
+        verifyIfExists(bookRequestDTO.getId(), bookRequestDTO.getName());
 
-        Book bookToCreate = bookMapper.toModel(bookDTO);
+        Book bookToCreate = bookMapper.toModel(bookRequestDTO);
         Book createdBook = bookRepository.save(bookToCreate);
         return bookMapper.toDTO(createdBook);
     }
 
-    public BookDTO update(Long id, BookDTO bookDTO) {
+    public BookRequestDTO update(Long id, BookRequestDTO bookRequestDTO) {
 
         // Regra de negócio para adicionar
         // - Um autor não pode ter o mesmo livro.
 
         Book foundBook = verifyAndGetIfExists(id);
-        bookDTO.setId(foundBook.getId());
-        Book bookToCreate = bookMapper.toModel(bookDTO);
+        bookRequestDTO.setId(foundBook.getId());
+        Book bookToCreate = bookMapper.toModel(bookRequestDTO);
         Book createdBook = bookRepository.save(bookToCreate);
         return bookMapper.toDTO(createdBook);
     }
 
-    private Book verifyAndGetIfExists(Long id) {
+    public Book verifyAndGetIfExists(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
     }
@@ -59,14 +59,14 @@ public class BookService {
         }
     }
 
-    public List<BookDTO> findAll() {
+    public List<BookRequestDTO> findAll() {
         return bookRepository.findAll()
                 .stream()
                 .map(bookMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public BookDTO findById(Long id) {
+    public BookRequestDTO findById(Long id) {
         return bookRepository.findById(id)
                 .map(bookMapper::toDTO)
                 .orElseThrow(() -> new BookNotFoundException(id));
@@ -75,42 +75,5 @@ public class BookService {
     public void deleteById(Long id) {
         bookRepository.deleteById(id);
     }
-
-    // MEU UPDATE
-//    public BookDTO update(Long id, BookDTO bookDTO) {
-//        Book foundBook = verifyAndGetIfExists(id);
-//        Publisher foundPublisher = publisherService.verifyAndGetIfExists(bookRequestDTO.getPublisherName());
-//
-//        Book bookToUpdate = bookMapper.toModel(bookRequestDTO);
-//        bookToUpdate.setId(id);
-//        bookToUpdate.setPublisher(foundPublisher);
-//        bookToUpdate.setLaunchDate(foundBook.getLaunchDate());
-//        Book updatedBook = bookRepository.save(bookToUpdate);
-//        return bookMapper.toDTO(updatedBook);
-
-    // UPDATE DO FRED
-//    public BookResponseDTO update(Long id, BookRequestDTO bookRequestDTO) {
-//        Book foundBook = verifyAndGetIfExists(id);
-//        Publisher foundPublisher = publisherService.verifyAndGetIfExists(bookRequestDTO.getPublisherName());
-//
-//        Book bookToUpdate = bookMapper.toModel(bookRequestDTO);
-//        bookToUpdate.setId(id);
-//        bookToUpdate.setPublisher(foundPublisher);
-//        bookToUpdate.setLaunchDate(foundBook.getLaunchDate());
-//        Book updatedBook = bookRepository.save(bookToUpdate);
-//        return bookMapper.toDTO(updatedBook);
-//    }
-//
-//    public Book verifyAndGetIfExists(Long id) {
-//        return bookRepository.findById(id)
-//                .orElseThrow(() -> new BookNotFoundException(id));
-//    }
-//
-//    private void verifyIfExists(String name) {
-//        Optional<Book> duplicatedBook = bookRepository
-//                .findByName(name);
-//        if(duplicatedBook.isPresent()) throw new BookAlreadyExistsException(name);
-//    }
-//    }
 
 }
