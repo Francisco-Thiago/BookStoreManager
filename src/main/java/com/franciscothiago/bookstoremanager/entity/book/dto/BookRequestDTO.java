@@ -17,7 +17,6 @@ public class BookRequestDTO {
 
     private Long id;
 
-
     @NotNull
     @NotEmpty
     @Size(max = 255)
@@ -36,4 +35,7 @@ public class BookRequestDTO {
     @NotEmpty
     @Size(max = 140)
     private String author;
+
+    @NotNull
+    private Long publisherId;
 }
