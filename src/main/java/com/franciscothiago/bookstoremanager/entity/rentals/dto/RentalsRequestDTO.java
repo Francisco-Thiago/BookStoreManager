@@ -5,23 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RentalsDTO {
+public class RentalsRequestDTO {
 
     private Long id;
 
     @NotNull
-    @NotEmpty
     private Long userId;
 
     @NotNull
-    @NotEmpty
     private Long bookId;
 
     @NotNull

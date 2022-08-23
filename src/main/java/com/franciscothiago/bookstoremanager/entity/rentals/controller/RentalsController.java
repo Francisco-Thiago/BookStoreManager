@@ -1,6 +1,7 @@
 package com.franciscothiago.bookstoremanager.entity.rentals.controller;
 
-import com.franciscothiago.bookstoremanager.entity.rentals.dto.RentalsDTO;
+import com.franciscothiago.bookstoremanager.entity.rentals.dto.RentalsRequestDTO;
+import com.franciscothiago.bookstoremanager.entity.rentals.dto.RentalsResponseDTO;
 import com.franciscothiago.bookstoremanager.entity.rentals.service.RentalsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,23 +22,23 @@ public class RentalsController implements RentalsControllerDocs{
     }
 
     @GetMapping
-    public List<RentalsDTO> getRentals() {
+    public List<RentalsResponseDTO> getRentals() {
         return rentalsService.findAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RentalsDTO create(@RequestBody @Valid RentalsDTO rentalsDTO) {
-        return rentalsService.create(rentalsDTO);
+    public RentalsResponseDTO create(@RequestBody @Valid RentalsRequestDTO rentalsRequestDTO) {
+       return rentalsService.create(rentalsRequestDTO);
     }
 
-    @PutMapping("{id}")
-    public RentalsDTO update(@PathVariable Long id, @RequestBody @Valid RentalsDTO rentalsDTO) {
-        return rentalsService.update(id, rentalsDTO);
-    }
+//    @PutMapping("{id}")
+//    public RentalsResponseDTO update(@PathVariable Long id, @RequestBody @Valid RentalsDTO rentalsDTO) {
+//        return rentalsService.update(id, rentalsDTO);
+//    }
 
     @GetMapping("/{id}")
-    public RentalsDTO findById(@PathVariable Long id) {
+    public RentalsResponseDTO findById(@PathVariable Long id) {
         return rentalsService.findById(id);
     }
 

@@ -1,9 +1,15 @@
 package com.franciscothiago.bookstoremanager.entity.rentals.service;
 
+
+import com.franciscothiago.bookstoremanager.entity.book.Book;
+import com.franciscothiago.bookstoremanager.entity.book.service.BookService;
 import com.franciscothiago.bookstoremanager.entity.rentals.Rentals;
-import com.franciscothiago.bookstoremanager.entity.rentals.dto.RentalsDTO;
+import com.franciscothiago.bookstoremanager.entity.rentals.dto.RentalsRequestDTO;
+import com.franciscothiago.bookstoremanager.entity.rentals.dto.RentalsResponseDTO;
 import com.franciscothiago.bookstoremanager.entity.rentals.mapper.RentalsMapper;
 import com.franciscothiago.bookstoremanager.entity.rentals.repository.RentalsRepository;
+import com.franciscothiago.bookstoremanager.entity.user.User;
+import com.franciscothiago.bookstoremanager.entity.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,26 +24,41 @@ public class RentalsService {
 
     private final RentalsRepository rentalsRepository;
 
+    private final BookService bookService;
+
+    private final UserService userService;
+
+
     @Autowired
-    public RentalsService(RentalsRepository rentalsRepository) {
+    public RentalsService(RentalsRepository rentalsRepository, BookService bookService, UserService userService) {
         this.rentalsRepository = rentalsRepository;
+        this.bookService = bookService;
+        this.userService = userService;
     }
 
-    public RentalsDTO create(RentalsDTO rentalsDTO) {
-        verifyIfExists(rentalsDTO.getId());
+    public RentalsResponseDTO create(RentalsRequestDTO rentalsRequestDTO) {
+        verifyIfExists(rentalsRequestDTO.getId());
 
-        Rentals rentalsToCreate = rentalsMapper.toModel(rentalsDTO);
-        Rentals createdRentals = rentalsRepository.save(rentalsToCreate);
-        return rentalsMapper.toDTO(createdRentals);
+        Book foundBook = bookService.verifyAndGetIfExists(rentalsRequestDTO.getBookId());
+        User foundUser = userService.verifyAndGetIfExists(rentalsRequestDTO.getUserId());
+
+        Rentals rentalsToCreate = rentalsMapper.toModel(rentalsRequestDTO);
+        rentalsToCreate.setBook(foundBook);
+        rentalsToCreate.setUser(foundUser);
+
+        Rentals rentalsCreated = rentalsRepository.save(rentalsToCreate);
+
+        return rentalsMapper.toDTO(rentalsCreated);
     }
 
-    public List<RentalsDTO> findAll() {
+
+    public List<RentalsResponseDTO> findAll() {
         return rentalsRepository.findAll()
                 .stream()
                 .map(rentalsMapper::toDTO)
                 .collect(Collectors.toList());
     }
-    public RentalsDTO findById(Long id) {
+    public RentalsResponseDTO findById(Long id) {
         return rentalsRepository.findById(id)
                 .map(rentalsMapper::toDTO)
                 .orElseThrow(() -> new RentalsNotFoundException(id));
@@ -47,20 +68,20 @@ public class RentalsService {
         rentalsRepository.deleteById(id);
     }
 
-    public RentalsDTO update(Long id, RentalsDTO rentalsDTO) {
-
-        Rentals foundRental = verifyAndGetIfExists(id);
-        rentalsDTO.setId(foundRental.getId());
-        rentalsDTO.setEntryDate(foundRental.getEntryDate());
-
-        verifyAuthenticityOfDates(foundRental, rentalsDTO);
-        verifyIfExists(rentalsDTO.getId());
-
-        Rentals rentalToCreate = rentalsMapper.toModel(rentalsDTO);
-        Rentals createdRental = rentalsRepository.save(rentalToCreate);
-
-        return rentalsMapper.toDTO(createdRental);
-    }
+//    public RentalsResponseDTO update(Long id, RentalsDTO rentalsDTO) {
+//
+//        Rentals foundRental = verifyAndGetIfExists(id);
+//        rentalsDTO.setId(foundRental.getId());
+//        rentalsDTO.setEntryDate(foundRental.getEntryDate());
+//
+//        verifyAuthenticityOfDates(foundRental, rentalsDTO);
+//        verifyIfExists(rentalsDTO.getId());
+//
+//        Rentals rentalToCreate = rentalsMapper.toModel(rentalsDTO);
+//        Rentals createdRental = rentalsRepository.save(rentalToCreate);
+//
+//        return rentalsMapper.toDTO(createdRental);
+//    }
 
     private void verifyIfExists(Long id) {
         Optional<Rentals> duplicatedRentals = rentalsRepository.findById(id);
@@ -75,7 +96,7 @@ public class RentalsService {
                 .orElseThrow(() -> new RentalsAlreadyExistsException(id));
     }
 
-    private void verifyAuthenticityOfDates(Rentals oldRental, RentalsDTO newRental) {
+    private void verifyAuthenticityOfDates(Rentals oldRental, RentalsRequestDTO newRental) {
         //Unique
         LocalDate entryDate = oldRental.getEntryDate();
 
@@ -86,6 +107,5 @@ public class RentalsService {
         if(newExpiration.compareTo(entryDate) < 0 && newReturn.compareTo(entryDate) < 0) {
             throw new InvalidDateException(newExpiration.toString(), newReturn.toString());
         }
-
     }
 }

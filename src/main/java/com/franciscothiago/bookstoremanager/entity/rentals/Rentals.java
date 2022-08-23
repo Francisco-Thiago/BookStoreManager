@@ -24,9 +24,12 @@ public class Rentals {
     @Column(nullable = false)
     private LocalDate expirationDate;
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne
+    @JoinColumn(name = "book_id")
     private Book book;
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
+
 }
