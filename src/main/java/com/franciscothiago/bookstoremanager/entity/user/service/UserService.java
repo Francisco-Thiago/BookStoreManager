@@ -65,7 +65,7 @@ public class UserService {
         return previousEmail.equals(newEmail);
     }
 
-    private User verifyAndGetIfExists(Long id) {
+    public User verifyAndGetIfExists(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserAlreadyExistsException(id));
     }
