@@ -1,6 +1,7 @@
 package com.franciscothiago.bookstoremanager.entity.rentals.controller;
 
-import com.franciscothiago.bookstoremanager.entity.rentals.dto.RentalsDTO;
+import com.franciscothiago.bookstoremanager.entity.rentals.dto.RentalsRequestDTO;
+import com.franciscothiago.bookstoremanager.entity.rentals.dto.RentalsResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -16,21 +17,21 @@ public interface RentalsControllerDocs {
             @ApiResponse(code = 200, message = "success Rentals creation"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    RentalsDTO create(RentalsDTO rentalsDTO);
+    RentalsResponseDTO create(RentalsRequestDTO rentalsRequestDTO);
 
     @ApiOperation(value = "Find a result by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "success search"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    RentalsDTO findById(Long id);
+    RentalsResponseDTO findById(Long id);
 
     @ApiOperation(value = "Get all rentals")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "success Rentals creation"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    List<RentalsDTO> getRentals();
+    List<RentalsResponseDTO> getRentals();
 
     @ApiOperation(value = "Delete a rental by id")
     @ApiResponses(value = {
@@ -39,11 +40,11 @@ public interface RentalsControllerDocs {
     })
     void delete(Long id);
 
-    @ApiOperation(value = "Update a rental")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Rental updated!"),
-            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
-    })
-    public RentalsDTO update(Long id, RentalsDTO rentalsDTO);
+//    @ApiOperation(value = "Update a rental")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Rental updated!"),
+//            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
+//    })
+//    public RentalsResponseDTO update(Long id, RentalsDTO rentalsDTO);
 
 }

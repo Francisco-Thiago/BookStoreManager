@@ -1,7 +1,8 @@
 package com.franciscothiago.bookstoremanager.entity.publisher.service;
 
 import com.franciscothiago.bookstoremanager.entity.publisher.Publisher;
-import com.franciscothiago.bookstoremanager.entity.publisher.dto.PublisherDTO;
+import com.franciscothiago.bookstoremanager.entity.publisher.dto.PublisherRequestDTO;
+import com.franciscothiago.bookstoremanager.entity.publisher.dto.PublisherResponseDTO;
 import com.franciscothiago.bookstoremanager.entity.publisher.mapper.PublisherMapper;
 import com.franciscothiago.bookstoremanager.entity.publisher.repository.PublisherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,21 +23,21 @@ public class PublisherService {
         this.publisherRepository = publisherRepository;
     }
 
-    public PublisherDTO create(PublisherDTO publisherDTO) {
-        verifyIfExists(publisherDTO.getName(), publisherDTO.getCode());
+    public PublisherResponseDTO create(PublisherRequestDTO publisherRequestDTO) {
+        verifyIfExists(publisherRequestDTO.getName(), publisherRequestDTO.getCode());
 
-        Publisher publisherToCreate = publisherMapper.toModel(publisherDTO);
+        Publisher publisherToCreate = publisherMapper.toModel(publisherRequestDTO);
         Publisher createdPublisher = publisherRepository.save(publisherToCreate);
         return publisherMapper.toDTO(createdPublisher);
     }
 
-    public List<PublisherDTO> findAll() {
+    public List<PublisherResponseDTO> findAll() {
         return publisherRepository.findAll()
                 .stream()
                 .map(publisherMapper::toDTO)
                 .collect(Collectors.toList());
     }
-    public PublisherDTO findById(Long id) {
+    public PublisherResponseDTO findById(Long id) {
         return publisherRepository.findById(id)
                 .map(publisherMapper::toDTO)
                 .orElseThrow(() -> new PublisherNotFoundException(id));
@@ -51,5 +52,10 @@ public class PublisherService {
         if(duplicatedPublisher.isPresent()) {
             throw new PublisherAlreadyExists(name, code);
         }
+    }
+
+    public Publisher verifyAndGetIfExists(Long id) {
+        return publisherRepository.findById(id)
+                .orElseThrow(() -> new PublisherNotFoundException(id));
     }
 }

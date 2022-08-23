@@ -1,39 +1,35 @@
-package com.franciscothiago.bookstoremanager.entity.book.dto;
+package com.franciscothiago.bookstoremanager.entity.rentals.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookDTO {
+public class RentalsRequestDTO {
 
     private Long id;
 
+    @NotNull
+    private Long userId;
 
     @NotNull
-    @NotEmpty
-    @Size(max = 255)
-    private String name;
-
-    @NotNull
-    @NotEmpty
-    @Size(max = 50)
-    private String code;
+    private Long bookId;
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate releases;
+    private LocalDate entryDate;
 
     @NotNull
-    @NotEmpty
-    @Size(max = 140)
-    private String author;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate returnDate;
+
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate expirationDate;
 }
