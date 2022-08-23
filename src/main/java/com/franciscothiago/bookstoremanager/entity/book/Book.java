@@ -1,12 +1,10 @@
 package com.franciscothiago.bookstoremanager.entity.book;
 
 import com.franciscothiago.bookstoremanager.entity.publisher.Publisher;
-import com.franciscothiago.bookstoremanager.entity.rentals.Rentals;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @Entity

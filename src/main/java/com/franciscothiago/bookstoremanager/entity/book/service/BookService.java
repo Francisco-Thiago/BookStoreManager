@@ -6,7 +6,6 @@ import com.franciscothiago.bookstoremanager.entity.book.dto.BookResponseDTO;
 import com.franciscothiago.bookstoremanager.entity.book.mapper.BookMapper;
 import com.franciscothiago.bookstoremanager.entity.book.repository.BookRepository;
 import com.franciscothiago.bookstoremanager.entity.publisher.Publisher;
-import com.franciscothiago.bookstoremanager.entity.publisher.repository.PublisherRepository;
 import com.franciscothiago.bookstoremanager.entity.publisher.service.PublisherService;
 import com.franciscothiago.bookstoremanager.entity.rentals.repository.RentalsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
