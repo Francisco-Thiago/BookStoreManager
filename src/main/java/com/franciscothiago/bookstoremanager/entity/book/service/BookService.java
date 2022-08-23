@@ -2,8 +2,13 @@ package com.franciscothiago.bookstoremanager.entity.book.service;
 
 import com.franciscothiago.bookstoremanager.entity.book.Book;
 import com.franciscothiago.bookstoremanager.entity.book.dto.BookRequestDTO;
+import com.franciscothiago.bookstoremanager.entity.book.dto.BookResponseDTO;
 import com.franciscothiago.bookstoremanager.entity.book.mapper.BookMapper;
 import com.franciscothiago.bookstoremanager.entity.book.repository.BookRepository;
+import com.franciscothiago.bookstoremanager.entity.publisher.Publisher;
+import com.franciscothiago.bookstoremanager.entity.publisher.repository.PublisherRepository;
+import com.franciscothiago.bookstoremanager.entity.publisher.service.PublisherService;
+import com.franciscothiago.bookstoremanager.entity.rentals.repository.RentalsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,32 +23,39 @@ public class BookService {
 
     private BookRepository bookRepository;
 
+    private PublisherService publisherService;
+
+    private RentalsRepository rentalsRepository;
+
     @Autowired
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, PublisherService publisherService, RentalsRepository rentalsRepository) {
         this.bookRepository = bookRepository;
+        this.publisherService = publisherService;
+        this.rentalsRepository = rentalsRepository;
     }
 
-    public BookRequestDTO create(BookRequestDTO bookRequestDTO) {
-
-        // Regra de negócio para adicionar
-        // - Um autor não pode ter o mesmo livro.
-
+    public BookResponseDTO create(BookRequestDTO bookRequestDTO) {
         verifyIfExists(bookRequestDTO.getId(), bookRequestDTO.getName());
+        Publisher foundPublisher = publisherService.verifyAndGetIfExists(bookRequestDTO.getPublisherId());
 
         Book bookToCreate = bookMapper.toModel(bookRequestDTO);
+        bookToCreate.setPublisher(foundPublisher);
         Book createdBook = bookRepository.save(bookToCreate);
+
         return bookMapper.toDTO(createdBook);
     }
 
-    public BookRequestDTO update(Long id, BookRequestDTO bookRequestDTO) {
-
-        // Regra de negócio para adicionar
-        // - Um autor não pode ter o mesmo livro.
-
+    public BookResponseDTO update(Long id, BookRequestDTO bookRequestDTO) {
         Book foundBook = verifyAndGetIfExists(id);
+        Publisher foundPublisher = publisherService.verifyAndGetIfExists(bookRequestDTO.getPublisherId());
+
         bookRequestDTO.setId(foundBook.getId());
+        bookRequestDTO.setRelease(foundBook.getRelease());
+
         Book bookToCreate = bookMapper.toModel(bookRequestDTO);
+        bookToCreate.setPublisher(foundPublisher);
         Book createdBook = bookRepository.save(bookToCreate);
+
         return bookMapper.toDTO(createdBook);
     }
 
@@ -59,14 +71,14 @@ public class BookService {
         }
     }
 
-    public List<BookRequestDTO> findAll() {
+    public List<BookResponseDTO> findAll() {
         return bookRepository.findAll()
                 .stream()
                 .map(bookMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public BookRequestDTO findById(Long id) {
+    public BookResponseDTO findById(Long id) {
         return bookRepository.findById(id)
                 .map(bookMapper::toDTO)
                 .orElseThrow(() -> new BookNotFoundException(id));

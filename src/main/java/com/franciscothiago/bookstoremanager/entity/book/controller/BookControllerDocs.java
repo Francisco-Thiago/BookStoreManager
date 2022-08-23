@@ -1,6 +1,7 @@
 package com.franciscothiago.bookstoremanager.entity.book.controller;
 
 import com.franciscothiago.bookstoremanager.entity.book.dto.BookRequestDTO;
+import com.franciscothiago.bookstoremanager.entity.book.dto.BookResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -16,21 +17,21 @@ public interface BookControllerDocs {
             @ApiResponse(code = 200, message = "success Book creation"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    BookRequestDTO create(BookRequestDTO bookRequestDTO);
+    BookResponseDTO create(BookRequestDTO bookRequestDTO);
 
     @ApiOperation(value = "Find a result by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "success search"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    BookRequestDTO findById(Long id);
+    BookResponseDTO findById(Long id);
 
     @ApiOperation(value = "Get all books")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "success Book creation"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    List<BookRequestDTO> getBooks();
+    List<BookResponseDTO> getBooks();
 
     @ApiOperation(value = "Delete a book by id")
     @ApiResponses(value = {
@@ -44,6 +45,6 @@ public interface BookControllerDocs {
             @ApiResponse(code = 200, message = "Book updated!"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    public BookRequestDTO update(Long id, BookRequestDTO bookRequestDTO);
+    public BookResponseDTO update(Long id, BookRequestDTO bookRequestDTO);
 
 }

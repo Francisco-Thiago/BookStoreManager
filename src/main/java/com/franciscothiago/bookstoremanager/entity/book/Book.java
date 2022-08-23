@@ -1,9 +1,8 @@
 package com.franciscothiago.bookstoremanager.entity.book;
 
+import com.franciscothiago.bookstoremanager.entity.publisher.Publisher;
 import com.franciscothiago.bookstoremanager.entity.rentals.Rentals;
 import lombok.Data;
-
-import com.franciscothiago.bookstoremanager.entity.publisher.Publisher;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -27,7 +26,7 @@ public class Book {
     private String author;
 
     @Column(nullable = false)
-    private LocalDate releases;
+    private LocalDate release;
 
     @ManyToOne
     @JoinColumn(name = "publisher_id")

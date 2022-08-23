@@ -29,7 +29,7 @@ public class BookRequestDTO {
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate releases;
+    private LocalDate release;
 
     @NotNull
     @NotEmpty

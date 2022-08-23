@@ -1,6 +1,7 @@
 package com.franciscothiago.bookstoremanager.entity.book.controller;
 
 import com.franciscothiago.bookstoremanager.entity.book.dto.BookRequestDTO;
+import com.franciscothiago.bookstoremanager.entity.book.dto.BookResponseDTO;
 import com.franciscothiago.bookstoremanager.entity.book.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,23 +22,23 @@ public class BookController implements BookControllerDocs{
     }
 
     @GetMapping
-    public List<BookRequestDTO> getBooks() {
+    public List<BookResponseDTO> getBooks() {
         return bookService.findAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BookRequestDTO create(@RequestBody @Valid BookRequestDTO bookRequestDTO) {
+    public BookResponseDTO create(@RequestBody @Valid BookRequestDTO bookRequestDTO) {
         return bookService.create(bookRequestDTO);
     }
 
     @PutMapping("{id}")
-    public BookRequestDTO update(@PathVariable Long id, @RequestBody @Valid BookRequestDTO bookRequestDTO) {
+    public BookResponseDTO update(@PathVariable Long id, @RequestBody @Valid BookRequestDTO bookRequestDTO) {
         return bookService.update(id, bookRequestDTO);
     }
 
     @GetMapping("/{id}")
-    public BookRequestDTO findById(@PathVariable Long id) {
+    public BookResponseDTO findById(@PathVariable Long id) {
         return bookService.findById(id);
     }
 
