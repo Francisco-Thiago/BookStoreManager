@@ -1,6 +1,7 @@
 package com.franciscothiago.bookstoremanager.entity.publisher.controller;
 
-import com.franciscothiago.bookstoremanager.entity.publisher.dto.PublisherDTO;
+import com.franciscothiago.bookstoremanager.entity.publisher.dto.PublisherRequestDTO;
+import com.franciscothiago.bookstoremanager.entity.publisher.dto.PublisherResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -16,21 +17,21 @@ public interface PublisherControllerDocs {
             @ApiResponse(code = 200, message = "success Publisher creation"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    PublisherDTO create(PublisherDTO publisherDTO);
+    PublisherResponseDTO create(PublisherRequestDTO publisherRequestDTO);
 
     @ApiOperation(value = "Find a result by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "success search"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    PublisherDTO findById(Long id);
+    PublisherResponseDTO findById(Long id);
 
     @ApiOperation(value = "Get all publishers")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "success Publisher creation"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    List<PublisherDTO> getPublishers();
+    List<PublisherResponseDTO> getPublishers();
 
     @ApiOperation(value = "Delete a publisher by id")
     @ApiResponses(value = {

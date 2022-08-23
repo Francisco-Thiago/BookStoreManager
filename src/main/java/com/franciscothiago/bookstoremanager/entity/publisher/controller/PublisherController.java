@@ -1,6 +1,7 @@
 package com.franciscothiago.bookstoremanager.entity.publisher.controller;
 
-import com.franciscothiago.bookstoremanager.entity.publisher.dto.PublisherDTO;
+import com.franciscothiago.bookstoremanager.entity.publisher.dto.PublisherRequestDTO;
+import com.franciscothiago.bookstoremanager.entity.publisher.dto.PublisherResponseDTO;
 import com.franciscothiago.bookstoremanager.entity.publisher.service.PublisherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,18 +22,18 @@ public class PublisherController implements PublisherControllerDocs{
     }
 
     @GetMapping
-    public List<PublisherDTO> getPublishers() {
+    public List<PublisherResponseDTO> getPublishers() {
         return publisherService.findAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PublisherDTO create(@RequestBody @Valid PublisherDTO publisherDTO) {
-        return publisherService.create(publisherDTO);
+    public PublisherResponseDTO create(@RequestBody @Valid PublisherRequestDTO publisherRequestDTO) {
+        return publisherService.create(publisherRequestDTO);
     }
 
     @GetMapping("/{id}")
-    public PublisherDTO findById(@PathVariable Long id) {
+    public PublisherResponseDTO findById(@PathVariable Long id) {
         return publisherService.findById(id);
     }
 

@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PublisherResponseDTO {
+public class PublisherRequestDTO {
 
     private Long id;
 
