@@ -2,10 +2,12 @@ package com.franciscothiago.bookstoremanager.docs;
 
 import com.franciscothiago.bookstoremanager.dto.BookRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.BookResponseDTO;
+import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.aspectj.bridge.Message;
 
 import java.util.List;
 
@@ -17,7 +19,7 @@ public interface BookControllerDocs {
             @ApiResponse(code = 200, message = "success Book creation"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    BookResponseDTO create(BookRequestDTO bookRequestDTO);
+    MessageDTO create(BookRequestDTO bookRequestDTO);
 
     @ApiOperation(value = "Find a result by id")
     @ApiResponses(value = {
@@ -45,6 +47,7 @@ public interface BookControllerDocs {
             @ApiResponse(code = 200, message = "Book updated!"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    public BookResponseDTO update(Long id, BookRequestDTO bookRequestDTO);
+
+    public MessageDTO update(Long id, BookRequestDTO bookRequestDTO);
 
 }

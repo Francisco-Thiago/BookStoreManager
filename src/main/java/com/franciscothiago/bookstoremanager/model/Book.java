@@ -1,6 +1,5 @@
 package com.franciscothiago.bookstoremanager.model;
 
-import com.franciscothiago.bookstoremanager.model.Publisher;
 import lombok.Data;
 
 import javax.persistence.*;

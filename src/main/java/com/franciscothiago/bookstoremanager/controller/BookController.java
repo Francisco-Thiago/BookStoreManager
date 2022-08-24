@@ -3,6 +3,7 @@ package com.franciscothiago.bookstoremanager.controller;
 import com.franciscothiago.bookstoremanager.docs.BookControllerDocs;
 import com.franciscothiago.bookstoremanager.dto.BookRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.BookResponseDTO;
+import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,12 +30,12 @@ public class BookController implements BookControllerDocs {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BookResponseDTO create(@RequestBody @Valid BookRequestDTO bookRequestDTO) {
+    public MessageDTO create(@RequestBody @Valid BookRequestDTO bookRequestDTO) {
         return bookService.create(bookRequestDTO);
     }
 
     @PutMapping("{id}")
-    public BookResponseDTO update(@PathVariable Long id, @RequestBody @Valid BookRequestDTO bookRequestDTO) {
+    public MessageDTO update(@PathVariable Long id, @RequestBody @Valid BookRequestDTO bookRequestDTO) {
         return bookService.update(id, bookRequestDTO);
     }
 
