@@ -1,16 +1,16 @@
 package com.franciscothiago.bookstoremanager.service;
 
 
+import com.franciscothiago.bookstoremanager.dto.RentalsRequestDTO;
+import com.franciscothiago.bookstoremanager.dto.RentalsResponseDTO;
 import com.franciscothiago.bookstoremanager.exception.InvalidDateException;
 import com.franciscothiago.bookstoremanager.exception.RentalsAlreadyExistsException;
 import com.franciscothiago.bookstoremanager.exception.RentalsNotFoundException;
+import com.franciscothiago.bookstoremanager.mapper.RentalsMapper;
 import com.franciscothiago.bookstoremanager.model.Book;
 import com.franciscothiago.bookstoremanager.model.Rentals;
-import com.franciscothiago.bookstoremanager.dto.RentalsRequestDTO;
-import com.franciscothiago.bookstoremanager.dto.RentalsResponseDTO;
-import com.franciscothiago.bookstoremanager.mapper.RentalsMapper;
-import com.franciscothiago.bookstoremanager.repository.RentalsRepository;
 import com.franciscothiago.bookstoremanager.model.User;
+import com.franciscothiago.bookstoremanager.repository.RentalsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,8 +1,8 @@
 package com.franciscothiago.bookstoremanager.mapper;
 
-import com.franciscothiago.bookstoremanager.model.Publisher;
 import com.franciscothiago.bookstoremanager.dto.PublisherRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.PublisherResponseDTO;
+import com.franciscothiago.bookstoremanager.model.Publisher;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

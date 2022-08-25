@@ -38,6 +38,15 @@ public class BookStoreExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(InvalidStringException.class)
+    public ResponseEntity<Object> handleInvalidStringException(InvalidDateException exception) {
+        return buildResponseEntity(
+                HttpStatus.NOT_FOUND,
+                exception.getMessage(),
+                Collections.singletonList(exception.getMessage())
+        );
+    }
+
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<Object> responseEntityExistsException(EntityExistsException exception) {
         return buildResponseEntity(

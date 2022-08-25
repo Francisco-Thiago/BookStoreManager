@@ -1,11 +1,11 @@
 package com.franciscothiago.bookstoremanager.service;
 
-import com.franciscothiago.bookstoremanager.exception.BookNotFoundException;
-import com.franciscothiago.bookstoremanager.exception.UserAlreadyExistsException;
-import com.franciscothiago.bookstoremanager.model.User;
 import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.dto.UserDTO;
+import com.franciscothiago.bookstoremanager.exception.BookNotFoundException;
+import com.franciscothiago.bookstoremanager.exception.UserAlreadyExistsException;
 import com.franciscothiago.bookstoremanager.mapper.UserMapper;
+import com.franciscothiago.bookstoremanager.model.User;
 import com.franciscothiago.bookstoremanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
