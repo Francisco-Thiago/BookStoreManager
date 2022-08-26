@@ -39,9 +39,9 @@ public class BookStoreExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(InvalidStringException.class)
-    public ResponseEntity<Object> handleInvalidStringException(InvalidDateException exception) {
+    public ResponseEntity<Object> handleInvalidStringException(InvalidStringException exception) {
         return buildResponseEntity(
-                HttpStatus.NOT_FOUND,
+                HttpStatus.BAD_REQUEST,
                 exception.getMessage(),
                 Collections.singletonList(exception.getMessage())
         );
