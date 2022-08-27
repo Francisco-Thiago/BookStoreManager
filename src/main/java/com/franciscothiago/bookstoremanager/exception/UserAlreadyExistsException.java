@@ -8,8 +8,12 @@ public class UserAlreadyExistsException extends EntityExistsException {
         super(String.format("User with id %s already exists!", id));
     }
 
-    public UserAlreadyExistsException(String email) {
-        super(String.format("User with email %s already exists!", email));
+    public UserAlreadyExistsException(String value) {
+        super(String.format("User with value %s already exists!", value));
+    }
+
+    public UserAlreadyExistsException(Long id, String email, String username) {
+        super(String.format("User with id %s, email %s or username %s already exists!", id, email, username));
     }
 
     public UserAlreadyExistsException(Long id, String email) {

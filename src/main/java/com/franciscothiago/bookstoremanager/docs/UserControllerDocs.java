@@ -1,7 +1,8 @@
 package com.franciscothiago.bookstoremanager.docs;
 
 import com.franciscothiago.bookstoremanager.dto.MessageDTO;
-import com.franciscothiago.bookstoremanager.dto.UserDTO;
+import com.franciscothiago.bookstoremanager.dto.UserRequestDTO;
+import com.franciscothiago.bookstoremanager.dto.UserResponseDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -17,21 +18,21 @@ public interface UserControllerDocs {
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
     @ApiOperation(value = "Create a new message")
-    MessageDTO create(UserDTO userToCreateDTO);
+    MessageDTO create(UserRequestDTO userToCreateDTO);
 
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success to get all users"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
     @ApiOperation(value = "Get all users")
-    List<UserDTO> getUsers();
+    List<UserResponseDTO> getUsers();
 
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success to get the user"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
     @ApiOperation(value = "Get user by id")
-    UserDTO getById(Long id);
+    UserResponseDTO getById(Long id);
 
 
     @ApiResponses(value = {
@@ -39,7 +40,7 @@ public interface UserControllerDocs {
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
     @ApiOperation(value = "Update a user")
-    public UserDTO update(Long id, UserDTO userDTO);
+    MessageDTO update(Long id, UserRequestDTO userRequestDTO);
 
 
     @ApiOperation(value = "Delete a user by id")
