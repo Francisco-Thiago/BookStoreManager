@@ -1,6 +1,5 @@
 package com.franciscothiago.bookstoremanager.repository;
 
-import com.franciscothiago.bookstoremanager.dto.UserDTO;
 import com.franciscothiago.bookstoremanager.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

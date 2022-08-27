@@ -1,5 +1,6 @@
 package com.franciscothiago.bookstoremanager.docs;
 
+import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.dto.PublisherRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.PublisherResponseDTO;
 import io.swagger.annotations.Api;
@@ -17,7 +18,14 @@ public interface PublisherControllerDocs {
             @ApiResponse(code = 200, message = "success Publisher creation"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    PublisherResponseDTO create(PublisherRequestDTO publisherRequestDTO);
+    MessageDTO create(PublisherRequestDTO publisherRequestDTO);
+
+    @ApiOperation(value = "Update a publisher")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "success Publisher update"),
+            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
+    })
+    MessageDTO update(Long id, PublisherRequestDTO publisherRequestDTO);
 
     @ApiOperation(value = "Find a result by id")
     @ApiResponses(value = {
