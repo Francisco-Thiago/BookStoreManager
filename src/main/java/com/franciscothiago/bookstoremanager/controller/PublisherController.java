@@ -1,6 +1,7 @@
 package com.franciscothiago.bookstoremanager.controller;
 
 import com.franciscothiago.bookstoremanager.docs.PublisherControllerDocs;
+import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.dto.PublisherRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.PublisherResponseDTO;
 import com.franciscothiago.bookstoremanager.service.PublisherService;
@@ -29,9 +30,15 @@ public class PublisherController implements PublisherControllerDocs {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PublisherResponseDTO create(@RequestBody @Valid PublisherRequestDTO publisherRequestDTO) {
+    public MessageDTO create(@RequestBody @Valid PublisherRequestDTO publisherRequestDTO) {
         return publisherService.create(publisherRequestDTO);
     }
+
+    @PutMapping("{id}")
+    public MessageDTO update(@PathVariable Long id, @RequestBody @Valid PublisherRequestDTO publisherRequestDTO) {
+        return publisherService.update(id, publisherRequestDTO);
+    }
+
 
     @GetMapping("/{id}")
     public PublisherResponseDTO findById(@PathVariable Long id) {

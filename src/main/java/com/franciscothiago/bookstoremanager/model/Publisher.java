@@ -3,6 +3,7 @@ package com.franciscothiago.bookstoremanager.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -20,4 +21,7 @@ public class Publisher{
 
     @Column(nullable = false)
     private String city;
+
+    @Column(nullable = false)
+    private LocalDate registrationDate;
 }

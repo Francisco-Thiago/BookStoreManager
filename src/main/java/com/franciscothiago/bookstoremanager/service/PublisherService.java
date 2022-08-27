@@ -1,9 +1,11 @@
 package com.franciscothiago.bookstoremanager.service;
 
+import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.dto.PublisherRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.PublisherResponseDTO;
 import com.franciscothiago.bookstoremanager.exception.PublisherAlreadyExists;
 import com.franciscothiago.bookstoremanager.exception.PublisherNotFoundException;
+import com.franciscothiago.bookstoremanager.exception.UpdateHasNoChangesException;
 import com.franciscothiago.bookstoremanager.mapper.PublisherMapper;
 import com.franciscothiago.bookstoremanager.model.Publisher;
 import com.franciscothiago.bookstoremanager.repository.PublisherRepository;
@@ -11,6 +13,7 @@ import com.franciscothiago.bookstoremanager.utils.StringPatterns;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,12 +32,39 @@ public class PublisherService {
         this.stringPatterns = stringPatterns;
     }
 
-    public PublisherResponseDTO create(PublisherRequestDTO publisherRequestDTO) {
+    public MessageDTO create(PublisherRequestDTO publisherRequestDTO) {
         verifyIfExists(publisherRequestDTO.getName(), publisherRequestDTO.getCode());
 
         Publisher publisherToCreate = publisherMapper.toModel(publisherRequestDTO);
+        publisherToCreate.setRegistrationDate(LocalDate.now());
         Publisher createdPublisher = publisherRepository.save(publisherToCreate);
-        return publisherMapper.toDTO(createdPublisher);
+
+        String createdMessage = String.format("Publisher %s with id %s successfully created", createdPublisher.getName(), createdPublisher.getId());
+
+        return MessageDTO.builder()
+                .message(createdMessage)
+                .build();
+    }
+
+    public MessageDTO update(Long id, PublisherRequestDTO publisherRequestDTO) {
+        Publisher foundPublisher = verifyAndGetIfExists(id);
+        publisherRequestDTO.setId(foundPublisher.getId());
+        Publisher publisherToCreate = publisherMapper.toModel(publisherRequestDTO);
+        publisherToCreate.setRegistrationDate(foundPublisher.getRegistrationDate());
+        checkForChangesToUpdate(foundPublisher, publisherToCreate);
+        Publisher createdPublisher = publisherRepository.save(publisherToCreate);
+
+        String createdMessage = String.format("Publisher with id %d has been updated successfully", createdPublisher.getId());
+
+        return MessageDTO.builder()
+                .message(createdMessage)
+                .build();
+    }
+
+    private void checkForChangesToUpdate(Publisher foundPublisher, Publisher publisherToCreate) {
+        if(foundPublisher.equals(publisherToCreate)) {
+            throw new UpdateHasNoChangesException("Publisher has no changes.");
+        }
     }
 
     public List<PublisherResponseDTO> findAll() {
@@ -64,6 +94,5 @@ public class PublisherService {
         return publisherRepository.findById(id)
                 .orElseThrow(() -> new PublisherNotFoundException(id));
     }
-
 
 }
