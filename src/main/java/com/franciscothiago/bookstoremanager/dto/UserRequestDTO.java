@@ -12,20 +12,25 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
+public class UserRequestDTO {
 
     private Long id;
 
     @NotNull
     @NotEmpty
     @Size(max = 255)
-    private String name;
+    private String username;
 
     @NotNull
     @NotEmpty
     @Email
     @Size(max = 140)
     private String email;
+
+    @NotNull
+    @NotEmpty
+    @Size(max = 140)
+    private String password;
 
     @NotNull
     @NotEmpty

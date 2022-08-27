@@ -26,10 +26,10 @@ public class StringPatterns {
     }
 
     public void onlyStringsValidator(String value) {
-        Pattern special = Pattern.compile("[0-9Á-ü]");
+        Pattern special = Pattern.compile("[0-9]");
         Matcher matchSpecial = special.matcher(value);
         if(matchSpecial.find()) {
-            throw new InvalidStringException("Please enter all capital letters without accents or special characters.");
+            throw new InvalidStringException("Please don't put numbers.");
         }
     }
 
