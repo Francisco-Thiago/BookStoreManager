@@ -3,10 +3,7 @@ package com.franciscothiago.bookstoremanager.service;
 import com.franciscothiago.bookstoremanager.dto.BookRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.BookResponseDTO;
 import com.franciscothiago.bookstoremanager.dto.MessageDTO;
-import com.franciscothiago.bookstoremanager.exception.BookAlreadyExistsException;
-import com.franciscothiago.bookstoremanager.exception.BookNotFoundException;
-import com.franciscothiago.bookstoremanager.exception.InvalidDateException;
-import com.franciscothiago.bookstoremanager.exception.InvalidStringException;
+import com.franciscothiago.bookstoremanager.exception.*;
 import com.franciscothiago.bookstoremanager.mapper.BookMapper;
 import com.franciscothiago.bookstoremanager.model.Book;
 import com.franciscothiago.bookstoremanager.model.Publisher;
@@ -47,10 +44,11 @@ public class BookService {
         bookRequestDTO.setName(stringPatterns.normalize(bookRequestDTO.getName()));
 
         verifyIfExists(bookRequestDTO.getId(), bookRequestDTO.getName(), bookRequestDTO.getCode());
-        verifyIfDateIsValid(bookRequestDTO.getRelease());
 
         Publisher foundPublisher = publisherService.verifyAndGetIfExists(bookRequestDTO.getPublisherId());
         Book bookToCreate = bookMapper.toModel(bookRequestDTO);
+        bookToCreate.setRelease(LocalDate.now());
+        bookToCreate.setChangeDate(LocalDate.now());
         bookToCreate.setPublisher(foundPublisher);
         Book createdBook = bookRepository.save(bookToCreate);
 
@@ -68,15 +66,19 @@ public class BookService {
         Book foundBook = verifyAndGetIfExists(id);
         Publisher foundPublisher = publisherService.verifyAndGetIfExists(bookRequestDTO.getPublisherId());
 
-        verifyIfDateIsValid(bookRequestDTO.getRelease());
-        verifyIfTheNameChanged(bookRequestDTO.getName(), foundBook.getName());
+        verifyIfTheNameChanged(foundBook.getName(), bookRequestDTO.getName());
 
         bookRequestDTO.setId(foundBook.getId());
         bookRequestDTO.setCode(foundBook.getCode());
-        bookRequestDTO.setRelease(foundBook.getRelease());
 
         Book bookToCreate = bookMapper.toModel(bookRequestDTO);
+
         bookToCreate.setPublisher(foundPublisher);
+        bookToCreate.setRelease(foundBook.getRelease());
+        bookToCreate.setChangeDate(foundBook.getRelease());
+        checkForChangesToUpdate(foundBook, bookToCreate);
+        bookToCreate.setChangeDate(LocalDate.now());
+
         Book createdBook = bookRepository.save(bookToCreate);
 
         String createdMessage = String.format("Book with id %d has been updated successfully", createdBook.getId());
@@ -84,6 +86,12 @@ public class BookService {
         return MessageDTO.builder()
                 .message(createdMessage)
                 .build();
+    }
+
+    private void checkForChangesToUpdate(Book foundBook, Book newBook) {
+        if(foundBook.equals(newBook)) {
+            throw new UpdateHasNoChangesException("Book has no changes");
+        }
     }
 
     private void verifyIfTheNameChanged(String oldName, String newName) {
@@ -108,13 +116,6 @@ public class BookService {
         Optional<Book> foundBook = bookRepository.findByName(name);
         if(foundBook.isPresent()) {
             throw new BookAlreadyExistsException(name);
-        }
-    }
-
-    private void verifyIfDateIsValid(LocalDate release) {
-        LocalDate currentDate = LocalDate.now();
-        if(release.isAfter(currentDate)) {
-            throw new InvalidDateException(release.toString());
         }
     }
 

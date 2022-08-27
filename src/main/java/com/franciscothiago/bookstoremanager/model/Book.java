@@ -25,6 +25,9 @@ public class Book {
     @Column(nullable = false)
     private LocalDate release;
 
+    @Column(nullable = false)
+    private LocalDate changeDate;
+
     @ManyToOne
     @JoinColumn(name = "publisher_id")
     private Publisher publisher;

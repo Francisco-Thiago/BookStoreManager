@@ -47,6 +47,15 @@ public class BookStoreExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(UpdateHasNoChangesException.class)
+    public ResponseEntity<Object> handleUpdateHasNoChangesException(UpdateHasNoChangesException exception) {
+        return buildResponseEntity(
+                HttpStatus.BAD_REQUEST,
+                exception.getMessage(),
+                Collections.singletonList(exception.getMessage())
+        );
+    }
+
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<Object> responseEntityExistsException(EntityExistsException exception) {
         return buildResponseEntity(

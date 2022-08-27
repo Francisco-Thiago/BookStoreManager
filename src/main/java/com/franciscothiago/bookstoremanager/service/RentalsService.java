@@ -52,7 +52,6 @@ public class RentalsService {
         return rentalsMapper.toDTO(rentalsCreated);
     }
 
-
     public List<RentalsResponseDTO> findAll() {
         return rentalsRepository.findAll()
                 .stream()

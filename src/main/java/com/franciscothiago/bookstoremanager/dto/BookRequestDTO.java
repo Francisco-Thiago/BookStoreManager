@@ -28,10 +28,6 @@ public class BookRequestDTO {
     private String code;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate release;
-
-    @NotNull
     @NotEmpty
     @Size(max = 140)
     private String author;
