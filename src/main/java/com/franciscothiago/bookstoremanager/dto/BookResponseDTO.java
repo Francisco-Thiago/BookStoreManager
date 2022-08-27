@@ -19,6 +19,8 @@ public class BookResponseDTO {
 
     private LocalDate release;
 
+    private LocalDate changeDate;
+
     private String author;
 
     private PublisherRequestDTO publisher;

@@ -7,6 +7,7 @@ import com.franciscothiago.bookstoremanager.exception.PublisherNotFoundException
 import com.franciscothiago.bookstoremanager.mapper.PublisherMapper;
 import com.franciscothiago.bookstoremanager.model.Publisher;
 import com.franciscothiago.bookstoremanager.repository.PublisherRepository;
+import com.franciscothiago.bookstoremanager.utils.StringPatterns;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,12 @@ public class PublisherService {
 
     private final PublisherRepository publisherRepository;
 
+    private final StringPatterns stringPatterns;
+
     @Autowired
-    public PublisherService(PublisherRepository publisherRepository) {
+    public PublisherService(PublisherRepository publisherRepository, StringPatterns stringPatterns) {
         this.publisherRepository = publisherRepository;
+        this.stringPatterns = stringPatterns;
     }
 
     public PublisherResponseDTO create(PublisherRequestDTO publisherRequestDTO) {
@@ -60,4 +64,6 @@ public class PublisherService {
         return publisherRepository.findById(id)
                 .orElseThrow(() -> new PublisherNotFoundException(id));
     }
+
+
 }
