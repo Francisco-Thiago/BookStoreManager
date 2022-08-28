@@ -9,9 +9,9 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class RentalsRequestDTO {
+@AllArgsConstructor
+public class RentalsUpdateDTO {
 
     private Long id;
 
@@ -23,6 +23,9 @@ public class RentalsRequestDTO {
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate expirationDate;
+    private LocalDate returnDate;
 
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate expirationDate;
 }

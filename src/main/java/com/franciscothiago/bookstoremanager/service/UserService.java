@@ -34,6 +34,7 @@ public class UserService {
     }
 
     public MessageDTO create(UserRequestDTO userToCreateDTO) {
+
         userToCreateDTO.setUsername(userToCreateDTO.getUsername().toUpperCase());
         stringPatterns.onlyStringsValidator(userToCreateDTO.getUsername());
 
@@ -47,6 +48,7 @@ public class UserService {
         return MessageDTO.builder()
                 .message(createdMessage)
                 .build();
+
     }
 
     public List<UserResponseDTO> findAll() {

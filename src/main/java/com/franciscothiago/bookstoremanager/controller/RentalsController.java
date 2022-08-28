@@ -1,8 +1,10 @@
 package com.franciscothiago.bookstoremanager.controller;
 
 import com.franciscothiago.bookstoremanager.docs.RentalsControllerDocs;
+import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsResponseDTO;
+import com.franciscothiago.bookstoremanager.dto.RentalsUpdateDTO;
 import com.franciscothiago.bookstoremanager.service.RentalsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,14 +31,14 @@ public class RentalsController implements RentalsControllerDocs {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RentalsResponseDTO create(@RequestBody @Valid RentalsRequestDTO rentalsRequestDTO) {
+    public MessageDTO create(@RequestBody @Valid RentalsRequestDTO rentalsRequestDTO) {
        return rentalsService.create(rentalsRequestDTO);
     }
 
-//    @PutMapping("{id}")
-//    public RentalsResponseDTO update(@PathVariable Long id, @RequestBody @Valid RentalsDTO rentalsDTO) {
-//        return rentalsService.update(id, rentalsDTO);
-//    }
+    @PutMapping("{id}")
+    public MessageDTO update(@PathVariable Long id, @RequestBody @Valid RentalsUpdateDTO rentalsUpdateDTO) {
+        return rentalsService.update(id, rentalsUpdateDTO);
+    }
 
     @GetMapping("/{id}")
     public RentalsResponseDTO findById(@PathVariable Long id) {

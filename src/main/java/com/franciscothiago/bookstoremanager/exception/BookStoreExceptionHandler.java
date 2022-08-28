@@ -56,6 +56,15 @@ public class BookStoreExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(RentalUpdateIsNotPossibleException.class)
+    public ResponseEntity<Object> handleRentalUpdateIsNotPossibleException(RentalUpdateIsNotPossibleException exception) {
+        return buildResponseEntity(
+                HttpStatus.BAD_REQUEST,
+                exception.getMessage(),
+                Collections.singletonList(exception.getMessage())
+        );
+    }
+
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<Object> responseEntityExistsException(EntityExistsException exception) {
         return buildResponseEntity(

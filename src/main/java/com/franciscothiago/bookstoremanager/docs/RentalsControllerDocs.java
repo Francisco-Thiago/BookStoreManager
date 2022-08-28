@@ -1,11 +1,14 @@
 package com.franciscothiago.bookstoremanager.docs;
 
+import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsResponseDTO;
+import com.franciscothiago.bookstoremanager.dto.RentalsUpdateDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.aspectj.bridge.Message;
 
 import java.util.List;
 
@@ -17,7 +20,7 @@ public interface RentalsControllerDocs {
             @ApiResponse(code = 200, message = "success Rentals creation"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    RentalsResponseDTO create(RentalsRequestDTO rentalsRequestDTO);
+    MessageDTO create(RentalsRequestDTO rentalsRequestDTO);
 
     @ApiOperation(value = "Find a result by id")
     @ApiResponses(value = {
@@ -40,11 +43,11 @@ public interface RentalsControllerDocs {
     })
     void delete(Long id);
 
-//    @ApiOperation(value = "Update a rental")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 200, message = "Rental updated!"),
-//            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
-//    })
-//    public RentalsResponseDTO update(Long id, RentalsDTO rentalsDTO);
+    @ApiOperation(value = "Update a rental")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Rental updated!"),
+            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
+    })
+    MessageDTO update(Long id, RentalsUpdateDTO rentalsUpdateDTO);
 
 }
