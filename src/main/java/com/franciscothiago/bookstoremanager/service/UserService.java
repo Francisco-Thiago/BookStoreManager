@@ -11,6 +11,7 @@ import com.franciscothiago.bookstoremanager.model.User;
 import com.franciscothiago.bookstoremanager.repository.UserRepository;
 import com.franciscothiago.bookstoremanager.utils.StringPatterns;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,16 +28,20 @@ public class UserService {
 
     private final StringPatterns stringPatterns;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public UserService(UserRepository userRepository, StringPatterns stringPatterns) {
+    public UserService(UserRepository userRepository, StringPatterns stringPatterns, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.stringPatterns = stringPatterns;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public MessageDTO create(UserRequestDTO userToCreateDTO) {
 
         userToCreateDTO.setUsername(userToCreateDTO.getUsername().toUpperCase());
         stringPatterns.onlyStringsValidator(userToCreateDTO.getUsername());
+        userToCreateDTO.setPassword(passwordEncoder.encode(userToCreateDTO.getPassword()));
 
         verifyIfExists(userToCreateDTO.getId(), userToCreateDTO.getEmail(), userToCreateDTO.getUsername());
         User userToCreate = userMapper.toModel(userToCreateDTO);
@@ -77,6 +82,8 @@ public class UserService {
 
         userRequestDTO.setEmail(foundUser.getEmail());
         userRequestDTO.setUsername(foundUser.getUsername());
+        userRequestDTO.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
+
         User userToCreate = userMapper.toModel(userRequestDTO);
         userToCreate.setRegistrationDate(foundUser.getRegistrationDate());
         checkForChangesToUpdate(foundUser, userToCreate);
