@@ -1,4 +1,4 @@
-z# Bookstore Manager
+# Bookstore Manager
 
 Bookstore Manager é uma aplicação web criado com Java Springboot. Seu objetivo é fazer o tratamento de dados em um sistema.
 
