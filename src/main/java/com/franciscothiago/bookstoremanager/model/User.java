@@ -1,5 +1,6 @@
 package com.franciscothiago.bookstoremanager.model;
 
+import com.franciscothiago.bookstoremanager.enums.Role;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -31,4 +32,8 @@ public class User {
 
     @Column(nullable = false)
     private LocalDate registrationDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 }
