@@ -1,5 +1,6 @@
 package com.franciscothiago.bookstoremanager.dto;
 
+import com.franciscothiago.bookstoremanager.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,4 +41,8 @@ public class UserRequestDTO {
     @NotEmpty
     @Size(max = 140)
     private String address;
+
+    @NotNull
+    @Size(max = 20)
+    private Role role;
 }

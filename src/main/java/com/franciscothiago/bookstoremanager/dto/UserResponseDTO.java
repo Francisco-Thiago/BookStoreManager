@@ -1,5 +1,6 @@
 package com.franciscothiago.bookstoremanager.dto;
 
+import com.franciscothiago.bookstoremanager.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,4 +24,6 @@ public class UserResponseDTO {
     private String address;
 
     private LocalDate registrationDate;
+
+    private Role role;
 }
