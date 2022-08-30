@@ -25,5 +25,5 @@ public class UserResponseDTO {
 
     private LocalDate registrationDate;
 
-    private Role role;
+    private String role;
 }

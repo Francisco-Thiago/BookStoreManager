@@ -26,6 +26,9 @@ public class Book {
     private LocalDate release;
 
     @Column(nullable = false)
+    private int quantity;
+
+    @Column(nullable = false)
     private LocalDate changeDate;
 
     @ManyToOne

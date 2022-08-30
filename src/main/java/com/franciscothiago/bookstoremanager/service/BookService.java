@@ -90,6 +90,20 @@ public class BookService {
                 .build();
     }
 
+    public void decrementQuantity(Book book) {
+        if(book.getQuantity() > 0) {
+            book.setQuantity(book.getQuantity() - 1);
+            bookRepository.save(book);
+        }
+    }
+
+    public void incrementQuantity(Book book) {
+        if(book.getQuantity() > 0) {
+            book.setQuantity(book.getQuantity() - 1);
+            bookRepository.save(book);
+        }
+    }
+
     private void checkForChangesToUpdate(Book foundBook, Book newBook) {
         if(foundBook.equals(newBook)) {
             throw new UpdateHasNoChangesException("Book has no changes");
