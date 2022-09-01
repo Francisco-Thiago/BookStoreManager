@@ -13,12 +13,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
-public class JwtTokenService {
+public class JwtTokenManager {
 
     private Long jwtTokenValidity;
     private String secret;
 
-    public JwtTokenService(@Value("${jwt.validity}") Long jwtTokenValidity, @Value("${jwt.secret}") String secret) {
+    public JwtTokenManager(@Value("${jwt.validity}") Long jwtTokenValidity, @Value("${jwt.secret}") String secret) {
         this.jwtTokenValidity = jwtTokenValidity;
         this.secret = secret;
     }
