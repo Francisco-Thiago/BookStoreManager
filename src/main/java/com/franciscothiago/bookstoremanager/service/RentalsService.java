@@ -43,9 +43,7 @@ public class RentalsService {
         verifyIfExists(rentalsRequestDTO.getId());
         Book foundBook = bookService.verifyAndGetIfExists(rentalsRequestDTO.getBookId());
         User foundUser = userService.verifyAndGetIfExists(rentalsRequestDTO.getUserId());
-        if(verifyIfCreateIsPossible(foundUser, foundBook)) {
-            System.out.println("Dá bom");
-        }
+        verifyIfCreateIsPossible(foundUser, foundBook);
 
         Rentals rentalsToCreate = rentalsMapper.toModel(rentalsRequestDTO);
         rentalsToCreate.setBook(foundBook);
@@ -54,6 +52,8 @@ public class RentalsService {
         rentalsToCreate.setReturnDate(null);
         rentalsToCreate.setStatus(defineEnumTypeValue(rentalsToCreate.getReturnDate(), rentalsToCreate.getExpirationDate()));
         verifyAuthenticityOfDates(rentalsToCreate.getEntryDate(), rentalsToCreate.getExpirationDate());
+
+        bookService.decrementQuantity(foundBook);
 
         Rentals rentalsCreated = rentalsRepository.save(rentalsToCreate);
 
@@ -97,6 +97,12 @@ public class RentalsService {
         checkIfUpdateIsTheSame(foundRental, rentalToCreate);
         Rentals createdRental = rentalsRepository.save(rentalToCreate);
 
+        if(createdRental.getStatus() != Status.WAITING) {
+            bookService.decrementQuantity(foundBook);
+        }
+
+        verifyIfBookStatusWasNull(id, createdRental, foundBook);
+
         String createdMessage = String.format("Rental with id %d has been updated successfully", createdRental.getId());
 
         return MessageDTO.builder()
@@ -128,14 +134,19 @@ public class RentalsService {
                 .orElseThrow(() -> new RentalsAlreadyExistsException(id));
     }
 
-    private boolean verifyIfCreateIsPossible(User user, Book book) {
+    private void verifyIfBookStatusWasNull(Long id, Rentals newRental, Book book) {
+        Optional<Rentals> rental = rentalsRepository.findById(id).filter(rent -> rent.getStatus() != Status.WAITING);
+        if(!rental.isPresent()) {
+            bookService.incrementQuantity(book);
+        }
+    }
+
+    private void verifyIfCreateIsPossible(User user, Book book) {
 
         Optional<Rentals> foundRental = rentalsRepository.findByUserAndBook(user, book).filter(rentals -> rentals.getReturnDate() == null);
 
         if(foundRental.isPresent()) {
             throw new RentalUpdateIsNotPossibleException("The user has not yet returned the past book.");
-        } else {
-            return true;
         }
 
     }

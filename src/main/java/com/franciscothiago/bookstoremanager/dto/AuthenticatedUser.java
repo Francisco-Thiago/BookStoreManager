@@ -34,7 +34,7 @@ public class AuthenticatedUser implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override

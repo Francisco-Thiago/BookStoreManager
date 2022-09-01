@@ -17,6 +17,8 @@ public class BookResponseDTO {
 
     private String code;
 
+    private int quantity;
+
     private LocalDate release;
 
     private LocalDate changeDate;
