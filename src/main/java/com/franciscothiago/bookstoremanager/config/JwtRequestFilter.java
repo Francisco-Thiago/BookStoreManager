@@ -2,6 +2,7 @@ package com.franciscothiago.bookstoremanager.config;
 
 import com.franciscothiago.bookstoremanager.service.AuthenticationService;
 import com.franciscothiago.bookstoremanager.service.JwtTokenManager;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,11 +20,15 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    @Autowired
     private AuthenticationService authenticationService;
 
-    @Autowired
     private JwtTokenManager jwtTokenManager;
+
+    @Autowired
+    public JwtRequestFilter(AuthenticationService authenticationService, JwtTokenManager jwtTokenManager) {
+        this.authenticationService = authenticationService;
+        this.jwtTokenManager = jwtTokenManager;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -32,14 +37,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         var requestTokenHeader = request.getHeader("Authorization");
 
         if(isTokenPresent(requestTokenHeader)) {
-            jwtToken = requestTokenHeader.substring(7);
-            username = jwtTokenManager.getUsernameFromToken(jwtToken);
+            try {
+                jwtToken = requestTokenHeader.substring(7);
+                username = jwtTokenManager.getUsernameFromToken(jwtToken);
+            } catch (ExpiredJwtException jwtException) {
+                logger.warn(jwtException);
+            }
         } else {
             logger.warn("Token JWT does not starts with Bearer String");
         }
 
         if(isUsernameInContext(username)) {
-            addUsernameInContext(request, username, jwtToken);
+            try {
+                addUsernameInContext(request, username, jwtToken);
+            } catch (Exception exception) {
+                logger.warn(exception);
+            }
         }
 
         chain.doFilter(request, response);
@@ -50,7 +63,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     private static boolean isUsernameInContext(String username) {
-        return username != null && SecurityContextHolder.getContext().getAuthentication() == null;
+        return !username.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null;
     }
 
     private void addUsernameInContext(HttpServletRequest request, String username, String jwtToken) {

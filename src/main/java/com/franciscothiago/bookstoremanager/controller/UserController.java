@@ -1,9 +1,8 @@
 package com.franciscothiago.bookstoremanager.controller;
 
 import com.franciscothiago.bookstoremanager.docs.UserControllerDocs;
-import com.franciscothiago.bookstoremanager.dto.MessageDTO;
-import com.franciscothiago.bookstoremanager.dto.UserRequestDTO;
-import com.franciscothiago.bookstoremanager.dto.UserResponseDTO;
+import com.franciscothiago.bookstoremanager.dto.*;
+import com.franciscothiago.bookstoremanager.service.AuthenticationService;
 import com.franciscothiago.bookstoremanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,9 +17,12 @@ public class UserController implements UserControllerDocs {
 
     private final UserService userService;
 
+    private AuthenticationService authenticationService;
+
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthenticationService authenticationService) {
         this.userService = userService;
+        this.authenticationService = authenticationService;
     }
 
     @GetMapping
@@ -37,6 +39,11 @@ public class UserController implements UserControllerDocs {
     @ResponseStatus(HttpStatus.CREATED)
     public MessageDTO create(@RequestBody @Valid UserRequestDTO userToCreateDTO) {
         return userService.create(userToCreateDTO);
+    }
+
+    @PostMapping(value = "/authenticate")
+    public JwtResponse createAuthenticationToken(@RequestBody @Valid JwtRequest jwtRequest) {
+        return authenticationService.createAuthenticationToken(jwtRequest);
     }
 
     @PutMapping("{id}")

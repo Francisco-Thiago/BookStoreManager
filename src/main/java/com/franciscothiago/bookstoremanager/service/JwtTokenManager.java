@@ -34,7 +34,7 @@ public class JwtTokenManager {
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidity * 1000))
-                .signWith(SignatureAlgorithm.ES512, secret).compact();
+                .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
     public String getUsernameFromToken(String token) {

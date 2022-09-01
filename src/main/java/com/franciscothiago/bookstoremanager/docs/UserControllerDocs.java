@@ -1,8 +1,6 @@
 package com.franciscothiago.bookstoremanager.docs;
 
-import com.franciscothiago.bookstoremanager.dto.MessageDTO;
-import com.franciscothiago.bookstoremanager.dto.UserRequestDTO;
-import com.franciscothiago.bookstoremanager.dto.UserResponseDTO;
+import com.franciscothiago.bookstoremanager.dto.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -49,4 +47,11 @@ public interface UserControllerDocs {
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
     void delete(Long id);
+
+    @ApiOperation(value = "Delete a user by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success user authenticated"),
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    JwtResponse createAuthenticationToken(JwtRequest jwtRequest);
 }

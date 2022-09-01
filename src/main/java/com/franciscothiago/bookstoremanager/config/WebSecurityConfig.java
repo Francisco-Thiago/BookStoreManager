@@ -20,6 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
+    public static final String AUTHENTICATE_API_URL = "/api/v1/users/authenticate";
     private static final String USERS_API_URL = "/api/v1/users/**";
     private static final String PUBLISHERS_API_URL = "/api/v1/publishers/**";
     private static final String RENTALS_API_URL = "/api/v1/rentals/**";
@@ -64,7 +65,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
-                .authorizeHttpRequests().antMatchers(USERS_API_URL, SWAGGER_URL).permitAll()
+                .authorizeHttpRequests().antMatchers(USERS_API_URL, SWAGGER_URL, AUTHENTICATE_API_URL).permitAll()
                 .antMatchers(PUBLISHERS_API_URL, BOOKS_API_URL).hasAnyRole(ROLE_ADMIN)
                 .antMatchers(RENTALS_API_URL).hasAnyRole(ROLE_ADMIN, ROLE_USER)
                 .anyRequest().authenticated()
