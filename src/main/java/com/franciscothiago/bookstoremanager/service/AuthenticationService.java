@@ -34,10 +34,9 @@ public class AuthenticationService implements UserDetailsService {
 
     public JwtResponse createAuthenticationToken(JwtRequest jwtRequest) {
         String username = jwtRequest.getUsername();
-        String password = jwtRequest.getPassword();
-        getAuthenticate(username, password);
+        authenticate(username, jwtRequest.getPassword());
 
-        UserDetails userDetails = this.loadUserByUsername(jwtRequest.getUsername());
+        UserDetails userDetails = this.loadUserByUsername(username);
         String token = jwtTokenManager.generateToken(userDetails);
 
         return JwtResponse.builder()
@@ -45,18 +44,18 @@ public class AuthenticationService implements UserDetailsService {
                 .build();
     }
 
-    private Authentication getAuthenticate(String username, String password) {
+    private Authentication authenticate(String username, String password) {
         return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).
-                orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not exists", username)));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("User not found with username %s", username)));
         return new AuthenticatedUser(
-            user.getUsername(),
-            user.getPassword(),
-            user.getRole().getDescription()
+                user.getUsername(),
+                user.getPassword(),
+                user.getRole().getDescription()
         );
     }
 }

@@ -34,43 +34,34 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         var username = "";
         var jwtToken = "";
+
         var requestTokenHeader = request.getHeader("Authorization");
-
-        if(isTokenPresent(requestTokenHeader)) {
-            try {
-                jwtToken = requestTokenHeader.substring(7);
-                username = jwtTokenManager.getUsernameFromToken(jwtToken);
-            } catch (ExpiredJwtException jwtException) {
-                logger.warn(jwtException);
-            }
+        if (isTokenPresent(requestTokenHeader)) {
+            jwtToken = requestTokenHeader.substring(7);
+            username = jwtTokenManager.getUsernameFromToken(jwtToken);
         } else {
-            logger.warn("Token JWT does not starts with Bearer String");
+            logger.warn("JWT Token does not begin with Bearer String");
         }
 
-        if(isUsernameInContext(username)) {
-            try {
-                addUsernameInContext(request, username, jwtToken);
-            } catch (Exception exception) {
-                logger.warn(exception);
-            }
+        if (isUsernameInContext(username)) {
+            addUsernameInContext(request, username, jwtToken);
         }
-
         chain.doFilter(request, response);
     }
 
-    private static boolean isTokenPresent(String requestTokenHeader) {
+    private boolean isTokenPresent(String requestTokenHeader) {
         return requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ");
     }
 
-    private static boolean isUsernameInContext(String username) {
+    private boolean isUsernameInContext(String username) {
         return !username.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null;
     }
 
     private void addUsernameInContext(HttpServletRequest request, String username, String jwtToken) {
         UserDetails userDetails = authenticationService.loadUserByUsername(username);
-
-        if(jwtTokenManager.validateToken(jwtToken, userDetails)) {
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        if (jwtTokenManager.validateToken(jwtToken, userDetails)) {
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
