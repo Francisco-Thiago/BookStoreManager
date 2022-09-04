@@ -19,6 +19,7 @@ import java.util.List;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -39,4 +40,5 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         mapper.writeValue(response.getOutputStream(), error);
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "unauthorized");
     }
+
 }
