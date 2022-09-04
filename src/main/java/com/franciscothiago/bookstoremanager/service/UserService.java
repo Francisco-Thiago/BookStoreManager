@@ -37,6 +37,19 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public List<UserResponseDTO> findAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public UserResponseDTO findById(Long id) {
+        return userRepository.findById(id)
+                .map(userMapper::toDTO)
+                .orElseThrow(() -> new BookNotFoundException(id));
+    }
+
     public MessageDTO create(UserRequestDTO userToCreateDTO) {
 
         userToCreateDTO.setUsername(userToCreateDTO.getUsername().toUpperCase());
@@ -55,14 +68,6 @@ public class UserService {
                 .build();
 
     }
-
-    public List<UserResponseDTO> findAll() {
-        return userRepository.findAll()
-                .stream()
-                .map(userMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
 
     public MessageDTO update(Long id, UserRequestDTO userRequestDTO) {
         User foundUser = verifyAndGetIfExists(id);
@@ -96,23 +101,13 @@ public class UserService {
                 .build();
     }
 
-    private boolean verifyIfEmailIsTheSame(String oldEmail, String newEmail) {
-        return oldEmail.equals(newEmail);
-    }
-
-    private boolean verifyIfUsernameIsTheSame(String oldUsername, String newUsername) {
-        return oldUsername.equals(newUsername);
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
     }
 
     public User verifyAndGetIfExists(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserAlreadyExistsException(id));
-    }
-
-    private void checkForChangesToUpdate(User foundUser, User newUser) {
-        if(foundUser.equals(newUser)) {
-            throw new UpdateHasNoChangesException("User has no changes");
-        }
     }
 
     private void verifyIfExistsByEmail(String email) {
@@ -131,6 +126,18 @@ public class UserService {
         }
     }
 
+    private void checkForChangesToUpdate(User foundUser, User newUser) {
+        if(foundUser.equals(newUser)) {
+            throw new UpdateHasNoChangesException("User has no changes");
+        }
+    }
+    private boolean verifyIfUsernameIsTheSame(String oldUsername, String newUsername) {
+        return oldUsername.equals(newUsername);
+    }
+
+    private boolean verifyIfEmailIsTheSame(String oldEmail, String newEmail) {
+        return oldEmail.equals(newEmail);
+    }
 
     private void verifyIfExists(Long id, String email, String username) {
         Optional<User> foundUser = userRepository.findByIdOrEmailOrUsername(id, email, username);
@@ -140,13 +147,4 @@ public class UserService {
         }
     }
 
-    public UserResponseDTO findById(Long id) {
-        return userRepository.findById(id)
-                .map(userMapper::toDTO)
-                .orElseThrow(() -> new BookNotFoundException(id));
-    }
-
-    public void deleteById(Long id) {
-        userRepository.deleteById(id);
-    }
 }

@@ -28,6 +28,11 @@ public class BookController implements BookControllerDocs {
         return bookService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public BookResponseDTO findById(@PathVariable Long id) {
+        return bookService.findById(id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public MessageDTO create(@RequestBody @Valid BookRequestDTO bookRequestDTO) {
@@ -39,14 +44,10 @@ public class BookController implements BookControllerDocs {
         return bookService.update(id, bookRequestDTO);
     }
 
-    @GetMapping("/{id}")
-    public BookResponseDTO findById(@PathVariable Long id) {
-        return bookService.findById(id);
-    }
-
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         bookService.deleteById(id);
     }
+
 }

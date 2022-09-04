@@ -16,4 +16,5 @@ public interface PublisherMapper {
     Publisher toModel(PublisherResponseDTO publisherResponseDTO);
 
     PublisherResponseDTO toDTO(Publisher publisher);
+
 }

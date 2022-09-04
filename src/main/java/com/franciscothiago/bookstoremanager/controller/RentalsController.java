@@ -29,6 +29,12 @@ public class RentalsController implements RentalsControllerDocs {
         return rentalsService.findAll();
     }
 
+
+    @GetMapping("/{id}")
+    public RentalsResponseDTO findById(@PathVariable Long id) {
+        return rentalsService.findById(id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public MessageDTO create(@RequestBody @Valid RentalsRequestDTO rentalsRequestDTO) {
@@ -40,14 +46,10 @@ public class RentalsController implements RentalsControllerDocs {
         return rentalsService.update(id, rentalsUpdateDTO);
     }
 
-    @GetMapping("/{id}")
-    public RentalsResponseDTO findById(@PathVariable Long id) {
-        return rentalsService.findById(id);
-    }
-
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         rentalsService.deleteById(id);
     }
+
 }

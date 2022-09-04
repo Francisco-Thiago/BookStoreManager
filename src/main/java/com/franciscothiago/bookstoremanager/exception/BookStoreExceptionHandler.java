@@ -100,5 +100,4 @@ public class BookStoreExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(httpStatus).body(apiError);
     }
 
-
 }

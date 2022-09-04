@@ -51,4 +51,5 @@ public class AuthenticatedUser implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

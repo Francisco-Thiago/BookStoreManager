@@ -15,7 +15,6 @@ import com.franciscothiago.bookstoremanager.repository.RentalsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +36,19 @@ public class RentalsService {
         this.rentalsRepository = rentalsRepository;
         this.bookService = bookService;
         this.userService = userService;
+    }
+
+    public List<RentalsResponseDTO> findAll() {
+        return rentalsRepository.findAll()
+                .stream()
+                .map(rentalsMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public RentalsResponseDTO findById(Long id) {
+        return rentalsRepository.findById(id)
+                .map(rentalsMapper::toDTO)
+                .orElseThrow(() -> new RentalsNotFoundException(id));
     }
 
     public MessageDTO create(RentalsRequestDTO rentalsRequestDTO) {
@@ -64,22 +76,6 @@ public class RentalsService {
                 .build();
     }
 
-    public List<RentalsResponseDTO> findAll() {
-        return rentalsRepository.findAll()
-                .stream()
-                .map(rentalsMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-    public RentalsResponseDTO findById(Long id) {
-        return rentalsRepository.findById(id)
-                .map(rentalsMapper::toDTO)
-                .orElseThrow(() -> new RentalsNotFoundException(id));
-    }
-
-    public void deleteById(Long id) {
-        rentalsRepository.deleteById(id);
-    }
-
     public MessageDTO update(Long id, RentalsUpdateDTO rentalsUpdateDTO) {
         Rentals foundRental = verifyAndGetIfExists(id);
         User foundUser = userService.verifyAndGetIfExists(rentalsUpdateDTO.getUserId());
@@ -101,13 +97,17 @@ public class RentalsService {
             bookService.decrementQuantity(foundBook);
         }
 
-        verifyIfBookStatusWasNull(id, createdRental, foundBook);
+        verifyIfBookStatusWasNull(id, foundBook);
 
         String createdMessage = String.format("Rental with id %d has been updated successfully", createdRental.getId());
 
         return MessageDTO.builder()
                 .message(createdMessage)
                 .build();
+    }
+
+    public void deleteById(Long id) {
+        rentalsRepository.deleteById(id);
     }
 
     private void verifyIfExists(Long id) {
@@ -117,24 +117,22 @@ public class RentalsService {
         }
     }
 
-    private Status defineEnumTypeValue(LocalDate returnDate, LocalDate expirationDate) {
-        if(returnDate == null) {
-            return Status.WAITING;
-        } else if(returnDate.compareTo(expirationDate) > 0) {
-            return Status.RETURNED_AFTER;
-        }else if(returnDate.compareTo(expirationDate) < 0){
-            return Status.RETURNED_BEFORE;
-        } else {
-            return Status.RETURNED_BEFORE;
-        }
-    }
-
     private Rentals verifyAndGetIfExists(Long id) {
         return rentalsRepository.findById(id)
                 .orElseThrow(() -> new RentalsAlreadyExistsException(id));
     }
 
-    private void verifyIfBookStatusWasNull(Long id, Rentals newRental, Book book) {
+    private void verifyAuthenticityOfDates(Rentals rental) {
+        LocalDate entryDate = rental.getEntryDate();
+        LocalDate returnDate = rental.getReturnDate();
+        LocalDate expirationDate = rental.getExpirationDate();
+
+        if(returnDate.compareTo(entryDate) < 0 || expirationDate.compareTo(entryDate) < 0) {
+            throw new InvalidDateException("Date of return or expiration is invalid.");
+        }
+    }
+
+    private void verifyIfBookStatusWasNull(Long id, Book book) {
         Optional<Rentals> rental = rentalsRepository.findById(id).filter(rent -> rent.getStatus() != Status.WAITING);
         if(!rental.isPresent()) {
             bookService.incrementQuantity(book);
@@ -142,13 +140,11 @@ public class RentalsService {
     }
 
     private void verifyIfCreateIsPossible(User user, Book book) {
-
         Optional<Rentals> foundRental = rentalsRepository.findByUserAndBook(user, book).filter(rentals -> rentals.getReturnDate() == null);
 
         if(foundRental.isPresent()) {
             throw new RentalUpdateIsNotPossibleException("The user has not yet returned the past book.");
         }
-
     }
 
     private boolean verifyIfUpdateIsPossible(Long id, User user, Book book) {
@@ -167,13 +163,15 @@ public class RentalsService {
         }
     }
 
-    private void verifyAuthenticityOfDates(Rentals rental) {
-        LocalDate entryDate = rental.getEntryDate();
-        LocalDate returnDate = rental.getReturnDate();
-        LocalDate expirationDate = rental.getExpirationDate();
-
-        if(returnDate.compareTo(entryDate) < 0 || expirationDate.compareTo(entryDate) < 0) {
-            throw new InvalidDateException("Date of return or expiration is invalid.");
+    private Status defineEnumTypeValue(LocalDate returnDate, LocalDate expirationDate) {
+        if(returnDate == null) {
+            return Status.WAITING;
+        } else if(returnDate.compareTo(expirationDate) > 0) {
+            return Status.RETURNED_AFTER;
+        }else if(returnDate.compareTo(expirationDate) < 0){
+            return Status.RETURNED_BEFORE;
+        } else {
+            return Status.RETURNED_BEFORE;
         }
     }
 
@@ -182,4 +180,5 @@ public class RentalsService {
             throw new InvalidDateException("Date of return or expiration is invalid.");
         }
     }
+
 }

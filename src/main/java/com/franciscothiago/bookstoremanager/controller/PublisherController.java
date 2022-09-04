@@ -28,6 +28,11 @@ public class PublisherController implements PublisherControllerDocs {
         return publisherService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public PublisherResponseDTO findById(@PathVariable Long id) {
+        return publisherService.findById(id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public MessageDTO create(@RequestBody @Valid PublisherRequestDTO publisherRequestDTO) {
@@ -39,15 +44,10 @@ public class PublisherController implements PublisherControllerDocs {
         return publisherService.update(id, publisherRequestDTO);
     }
 
-
-    @GetMapping("/{id}")
-    public PublisherResponseDTO findById(@PathVariable Long id) {
-        return publisherService.findById(id);
-    }
-
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         publisherService.deleteById(id);
     }
+
 }

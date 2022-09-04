@@ -28,4 +28,5 @@ public class RentalsResponseDTO {
     private LocalDate returnDate;
 
     private LocalDate expirationDate;
+
 }
