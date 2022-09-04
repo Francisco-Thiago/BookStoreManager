@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum Status {
+
     RETURNED_BEFORE("Devolvido (sem atraso)"),
     RETURNED_AFTER("Devolvido (com atraso)"),
     WAITING("Em espera...");

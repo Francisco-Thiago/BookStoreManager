@@ -49,4 +49,5 @@ public class UserController implements UserControllerDocs {
     public void delete(@PathVariable Long id) {
         userService.deleteById(id);
     }
+
 }

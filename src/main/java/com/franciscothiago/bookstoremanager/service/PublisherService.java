@@ -32,6 +32,19 @@ public class PublisherService {
         this.stringPatterns = stringPatterns;
     }
 
+    public List<PublisherResponseDTO> findAll() {
+        return publisherRepository.findAll()
+                .stream()
+                .map(publisherMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public PublisherResponseDTO findById(Long id) {
+        return publisherRepository.findById(id)
+                .map(publisherMapper::toDTO)
+                .orElseThrow(() -> new PublisherNotFoundException(id));
+    }
+
     public MessageDTO create(PublisherRequestDTO publisherRequestDTO) {
         verifyIfExists(publisherRequestDTO.getName(), publisherRequestDTO.getCode());
 
@@ -61,26 +74,13 @@ public class PublisherService {
                 .build();
     }
 
-    private void checkForChangesToUpdate(Publisher foundPublisher, Publisher publisherToCreate) {
-        if(foundPublisher.equals(publisherToCreate)) {
-            throw new UpdateHasNoChangesException("Publisher has no changes.");
-        }
-    }
-
-    public List<PublisherResponseDTO> findAll() {
-        return publisherRepository.findAll()
-                .stream()
-                .map(publisherMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-    public PublisherResponseDTO findById(Long id) {
-        return publisherRepository.findById(id)
-                .map(publisherMapper::toDTO)
-                .orElseThrow(() -> new PublisherNotFoundException(id));
-    }
-
     public void deleteById(Long id) {
         publisherRepository.deleteById(id);
+    }
+
+    public Publisher verifyAndGetIfExists(Long id) {
+        return publisherRepository.findById(id)
+                .orElseThrow(() -> new PublisherNotFoundException(id));
     }
 
     private void verifyIfExists(String name, String code) {
@@ -90,9 +90,10 @@ public class PublisherService {
         }
     }
 
-    public Publisher verifyAndGetIfExists(Long id) {
-        return publisherRepository.findById(id)
-                .orElseThrow(() -> new PublisherNotFoundException(id));
+    private void checkForChangesToUpdate(Publisher foundPublisher, Publisher publisherToCreate) {
+        if(foundPublisher.equals(publisherToCreate)) {
+            throw new UpdateHasNoChangesException("Publisher has no changes.");
+        }
     }
 
 }

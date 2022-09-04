@@ -9,6 +9,7 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface RentalsMapper {
+
     RentalsMapper INSTANCE = Mappers.getMapper(RentalsMapper.class);
 
     Rentals toModel(RentalsRequestDTO rentalsRequestDTO);
@@ -18,4 +19,5 @@ public interface RentalsMapper {
     Rentals toModel(RentalsUpdateDTO rentalsUpdateDTO);
 
     RentalsResponseDTO toDTO(Rentals rentals);
+
 }

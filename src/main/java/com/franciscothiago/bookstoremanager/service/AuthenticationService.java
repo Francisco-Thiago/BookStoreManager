@@ -25,4 +25,5 @@ public class AuthenticationService implements UserDetailsService {
             user.getRole().getDescription()
         );
     }
+
 }

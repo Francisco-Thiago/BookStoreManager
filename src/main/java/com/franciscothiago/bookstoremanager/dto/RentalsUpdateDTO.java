@@ -28,4 +28,5 @@ public class RentalsUpdateDTO {
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate expirationDate;
+
 }

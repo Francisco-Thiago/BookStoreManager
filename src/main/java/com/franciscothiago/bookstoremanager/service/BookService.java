@@ -41,6 +41,19 @@ public class BookService {
         this.stringPatterns = stringPatterns;
     }
 
+    public List<BookResponseDTO> findAll() {
+        return bookRepository.findAll()
+                .stream()
+                .map(bookMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public BookResponseDTO findById(Long id) {
+        return bookRepository.findById(id)
+                .map(bookMapper::toDTO)
+                .orElseThrow(() -> new BookNotFoundException(id));
+    }
+
     public MessageDTO create(BookRequestDTO bookRequestDTO) {
         bookRequestDTO.setAuthor(stringPatterns.normalize(bookRequestDTO.getAuthor()));
         bookRequestDTO.setName(stringPatterns.normalize(bookRequestDTO.getName()));
@@ -90,11 +103,27 @@ public class BookService {
                 .build();
     }
 
+    public void deleteById(Long id) {
+        bookRepository.deleteById(id);
+    }
+
+    private void verifyIfExists(String name) {
+        Optional<Book> foundBook = bookRepository.findByName(name);
+        if(foundBook.isPresent()) {
+            throw new BookAlreadyExistsException(name);
+        }
+    }
+
     public void decrementQuantity(Book book) {
         if(book.getQuantity() > 0) {
             book.setQuantity(book.getQuantity() - 1);
             bookRepository.save(book);
         }
+    }
+
+    public Book verifyAndGetIfExists(Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
     }
 
     public void incrementQuantity(Book book) {
@@ -116,40 +145,11 @@ public class BookService {
         }
     }
 
-    public Book verifyAndGetIfExists(Long id) {
-        return bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException(id));
-    }
-
     private void verifyIfExists(Long id, String name, String code) {
         Optional<Book> foundBook = bookRepository.findByIdOrNameOrCode(id, name, code);
         if(foundBook.isPresent()) {
             throw new BookAlreadyExistsException(id, name, code);
         }
-    }
-
-    private void verifyIfExists(String name) {
-        Optional<Book> foundBook = bookRepository.findByName(name);
-        if(foundBook.isPresent()) {
-            throw new BookAlreadyExistsException(name);
-        }
-    }
-
-    public List<BookResponseDTO> findAll() {
-        return bookRepository.findAll()
-                .stream()
-                .map(bookMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    public BookResponseDTO findById(Long id) {
-        return bookRepository.findById(id)
-                .map(bookMapper::toDTO)
-                .orElseThrow(() -> new BookNotFoundException(id));
-    }
-
-    public void deleteById(Long id) {
-        bookRepository.deleteById(id);
     }
 
 }

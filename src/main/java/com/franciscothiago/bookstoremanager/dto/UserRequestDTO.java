@@ -44,4 +44,5 @@ public class UserRequestDTO {
     @NotNull
     @Size(max = 20)
     private String role;
+
 }

@@ -1,6 +1,5 @@
 package com.franciscothiago.bookstoremanager.dto;
 
-import com.franciscothiago.bookstoremanager.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +10,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserResponseDTO {
+
     private Long id;
 
     private String username;
@@ -26,4 +26,5 @@ public class UserResponseDTO {
     private LocalDate registrationDate;
 
     private String role;
+
 }

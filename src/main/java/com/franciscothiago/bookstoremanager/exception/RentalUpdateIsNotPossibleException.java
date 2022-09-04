@@ -11,4 +11,5 @@ public class RentalUpdateIsNotPossibleException extends RuntimeException {
     public RentalUpdateIsNotPossibleException(String message, Throwable cause) {
         super(message, cause);
     }
+
 }

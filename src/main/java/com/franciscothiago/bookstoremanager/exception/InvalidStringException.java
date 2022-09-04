@@ -11,4 +11,5 @@ public class InvalidStringException extends RuntimeException{
     public InvalidStringException(String message, Throwable cause) {
         super(message, cause);
     }
+
 }

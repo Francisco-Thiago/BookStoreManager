@@ -50,6 +50,11 @@ public class JwtTokenManager {
         return claimsResolver.apply(claims);
     }
 
+    private boolean isTokenExpired(String token) {
+        Date expirationDate = getDateExpirationFromToken(token);
+        return expirationDate.before(new Date());
+    }
+
     private Claims getAllClaimsForToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(secret)
@@ -63,8 +68,4 @@ public class JwtTokenManager {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    private boolean isTokenExpired(String token) {
-        Date expirationDate = getDateExpirationFromToken(token);
-        return expirationDate.before(new Date());
-    }
 }

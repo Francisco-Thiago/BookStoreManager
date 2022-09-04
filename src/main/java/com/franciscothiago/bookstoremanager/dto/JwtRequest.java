@@ -19,4 +19,5 @@ public class JwtRequest {
     @NotNull
     @NotEmpty
     private String password;
+
 }

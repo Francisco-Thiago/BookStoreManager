@@ -13,6 +13,20 @@ import java.util.List;
 @Api("Publishers management")
 public interface PublisherControllerDocs {
 
+    @ApiOperation(value = "Get all publishers")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "success Publisher creation"),
+            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
+    })
+    List<PublisherResponseDTO> getPublishers();
+
+    @ApiOperation(value = "Find a result by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "success search"),
+            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
+    })
+    PublisherResponseDTO findById(Long id);
+
     @ApiOperation(value = "Create a new publisher")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "success Publisher creation"),
@@ -26,20 +40,6 @@ public interface PublisherControllerDocs {
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
     MessageDTO update(Long id, PublisherRequestDTO publisherRequestDTO);
-
-    @ApiOperation(value = "Find a result by id")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "success search"),
-            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
-    })
-    PublisherResponseDTO findById(Long id);
-
-    @ApiOperation(value = "Get all publishers")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "success Publisher creation"),
-            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
-    })
-    List<PublisherResponseDTO> getPublishers();
 
     @ApiOperation(value = "Delete a publisher by id")
     @ApiResponses(value = {

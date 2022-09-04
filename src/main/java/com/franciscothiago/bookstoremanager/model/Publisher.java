@@ -24,4 +24,5 @@ public class Publisher{
 
     @Column(nullable = false)
     private LocalDate registrationDate;
+
 }

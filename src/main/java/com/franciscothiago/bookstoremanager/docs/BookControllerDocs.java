@@ -13,12 +13,12 @@ import java.util.List;
 @Api("Book management")
 public interface BookControllerDocs {
 
-    @ApiOperation(value = "Create a new book")
+    @ApiOperation(value = "Get all books")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "success Book creation"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    MessageDTO create(BookRequestDTO bookRequestDTO);
+    List<BookResponseDTO> getBooks();
 
     @ApiOperation(value = "Find a result by id")
     @ApiResponses(value = {
@@ -27,12 +27,19 @@ public interface BookControllerDocs {
     })
     BookResponseDTO findById(Long id);
 
-    @ApiOperation(value = "Get all books")
+    @ApiOperation(value = "Create a new book")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "success Book creation"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    List<BookResponseDTO> getBooks();
+    MessageDTO create(BookRequestDTO bookRequestDTO);
+
+    @ApiOperation(value = "Update a book")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Book updated!"),
+            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
+    })
+    public MessageDTO update(Long id, BookRequestDTO bookRequestDTO);
 
     @ApiOperation(value = "Delete a book by id")
     @ApiResponses(value = {
@@ -40,13 +47,5 @@ public interface BookControllerDocs {
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
     void delete(Long id);
-
-    @ApiOperation(value = "Update a book")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Book updated!"),
-            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
-    })
-
-    public MessageDTO update(Long id, BookRequestDTO bookRequestDTO);
 
 }
