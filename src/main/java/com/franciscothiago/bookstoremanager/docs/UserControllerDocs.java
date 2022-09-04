@@ -1,8 +1,6 @@
 package com.franciscothiago.bookstoremanager.docs;
 
-import com.franciscothiago.bookstoremanager.dto.MessageDTO;
-import com.franciscothiago.bookstoremanager.dto.UserRequestDTO;
-import com.franciscothiago.bookstoremanager.dto.UserResponseDTO;
+import com.franciscothiago.bookstoremanager.dto.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -47,5 +45,12 @@ public interface UserControllerDocs {
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
     void delete(Long id);
+
+    @ApiOperation(value = "Token Authentication")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Token authenticated."),
+            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
+    })
+    JwtResponse createAuthenticationToken(JwtRequest jwtRequest);
 
 }
