@@ -11,6 +11,7 @@ import com.franciscothiago.bookstoremanager.model.Publisher;
 import com.franciscothiago.bookstoremanager.repository.PublisherRepository;
 import com.franciscothiago.bookstoremanager.utils.StringPatterns;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class PublisherService {
     private final BookService bookService;
 
     @Autowired
+    @Lazy
     public PublisherService(PublisherRepository publisherRepository, StringPatterns stringPatterns, BookService bookService) {
         this.publisherRepository = publisherRepository;
         this.stringPatterns = stringPatterns;
@@ -79,8 +81,8 @@ public class PublisherService {
 
     public void deleteById(Long id) {
 
+        bookService.verifyByPublisher(id);
         publisherRepository.deleteById(id);
-        bookService.deleteByPublisher(id);
 
     }
 

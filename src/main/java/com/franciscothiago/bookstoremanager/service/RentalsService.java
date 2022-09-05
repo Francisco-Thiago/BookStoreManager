@@ -13,6 +13,7 @@ import com.franciscothiago.bookstoremanager.model.Rentals;
 import com.franciscothiago.bookstoremanager.model.User;
 import com.franciscothiago.bookstoremanager.repository.RentalsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,12 +33,16 @@ public class RentalsService {
 
     private final UserService userService;
 
+    private final RentalsService rentalsService;
+
 
     @Autowired
-    public RentalsService(RentalsRepository rentalsRepository, BookService bookService, UserService userService) {
+    @Lazy
+    public RentalsService(RentalsRepository rentalsRepository, BookService bookService, UserService userService, RentalsService rentalsService) {
         this.rentalsRepository = rentalsRepository;
         this.bookService = bookService;
         this.userService = userService;
+        this.rentalsService = rentalsService;
     }
 
     public Page<RentalsResponseDTO> findAll(Pageable pageable) {
@@ -91,6 +96,7 @@ public class RentalsService {
         verifyAuthenticityOfDates(rentalToCreate);
         rentalToCreate.setStatus(defineEnumTypeValue(rentalToCreate.getReturnDate(), rentalToCreate.getExpirationDate()));
         checkIfUpdateIsTheSame(foundRental, rentalToCreate);
+//        verifyQuantityAndSet(foundRental, rentalToCreate);
         Rentals createdRental = rentalsRepository.save(rentalToCreate);
 
         if(createdRental.getStatus() != Status.WAITING) {
@@ -105,6 +111,18 @@ public class RentalsService {
                 .message(createdMessage)
                 .build();
     }
+
+//    private void verifyQuantityAndSet(Rentals foundRental, Rentals oldRental) {
+//        foundRental.getStatus();
+//        oldRental.getStatus();
+//
+//        switch (foundRental.getReturnDate().compareTo(oldRental.getReturnDate())) {
+//            case 0: ;
+//            case 1: ;
+//            case -1: ;
+//        }
+//
+//    }
 
     public void deleteById(Long id) {
         rentalsRepository.deleteById(id);
@@ -181,12 +199,16 @@ public class RentalsService {
         }
     }
 
-    public void deleteByUser(Long id) {
+    public boolean verifyRentalsOfUsers(Long id) {
         User user = userService.verifyAndGetIfExists(id);
         List<Rentals> rentals = rentalsRepository.findByUser(user);
-        rentals.stream().forEach((rentalList) -> {
-            rentalsRepository.deleteById(rentalList.getId());
-        });
+        System.out.println(rentals);
+
+        if(rentals.size() > 0) {
+            throw new RentalUpdateIsNotPossibleException("Rentals contains the user informed. Delete the rentals before.");
+        } else {
+            return true;
+        }
     }
 
     public void deleteByBook(Long id) {

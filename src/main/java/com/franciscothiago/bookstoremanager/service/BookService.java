@@ -5,6 +5,7 @@ import com.franciscothiago.bookstoremanager.dto.BookResponseDTO;
 import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.exception.BookAlreadyExistsException;
 import com.franciscothiago.bookstoremanager.exception.BookNotFoundException;
+import com.franciscothiago.bookstoremanager.exception.PublisherIsNotPossibleToUpdateException;
 import com.franciscothiago.bookstoremanager.exception.UpdateHasNoChangesException;
 import com.franciscothiago.bookstoremanager.mapper.BookMapper;
 import com.franciscothiago.bookstoremanager.model.Book;
@@ -13,6 +14,7 @@ import com.franciscothiago.bookstoremanager.repository.BookRepository;
 import com.franciscothiago.bookstoremanager.repository.RentalsRepository;
 import com.franciscothiago.bookstoremanager.utils.StringPatterns;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,7 @@ public class BookService {
     private RentalsService rentalsService;
 
     @Autowired
+    @Lazy
     public BookService(BookRepository bookRepository, PublisherService publisherService, RentalsRepository rentalsRepository, StringPatterns stringPatterns, RentalsService rentalsService) {
         this.bookRepository = bookRepository;
         this.publisherService = publisherService;
@@ -158,12 +161,14 @@ public class BookService {
         }
     }
 
-    public void deleteByPublisher(Long id) {
+    public boolean verifyByPublisher(Long id) {
         Publisher publisher = publisherService.verifyAndGetIfExists(id);
         List<Book> books = bookRepository.findByPublisher(publisher);
-        books.stream().forEach((publisherList) -> {
-            publisherService.deleteById(publisher.getId());
-        });
+        if(books.size() > 0) {
+            throw new PublisherIsNotPossibleToUpdateException("Publisher contains books registred. Delete before.");
+        } else {
+            return true;
+        }
     }
 
 }

@@ -33,6 +33,7 @@ public class JwtTokenManager {
                 .setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidity * 1000))
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
+
     public String getUsernameFromToken(String token) {
         return getClaimForToken(token, Claims::getSubject);
     }
