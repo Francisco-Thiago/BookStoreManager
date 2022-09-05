@@ -35,12 +35,15 @@ public class BookService {
 
     private StringPatterns stringPatterns;
 
+    private RentalsService rentalsService;
+
     @Autowired
-    public BookService(BookRepository bookRepository, PublisherService publisherService, RentalsRepository rentalsRepository, StringPatterns stringPatterns) {
+    public BookService(BookRepository bookRepository, PublisherService publisherService, RentalsRepository rentalsRepository, StringPatterns stringPatterns, RentalsService rentalsService) {
         this.bookRepository = bookRepository;
         this.publisherService = publisherService;
         this.rentalsRepository = rentalsRepository;
         this.stringPatterns = stringPatterns;
+        this.rentalsService = rentalsService;
     }
 
     public Page<BookResponseDTO> findAll(Pageable pageable) {
@@ -104,7 +107,10 @@ public class BookService {
     }
 
     public void deleteById(Long id) {
+
         bookRepository.deleteById(id);
+        rentalsService.deleteByBook(id);
+
     }
 
     private void verifyIfExists(String name) {
@@ -150,6 +156,14 @@ public class BookService {
         if(foundBook.isPresent()) {
             throw new BookAlreadyExistsException(id, name, code);
         }
+    }
+
+    public void deleteByPublisher(Long id) {
+        Publisher publisher = publisherService.verifyAndGetIfExists(id);
+        List<Book> books = bookRepository.findByPublisher(publisher);
+        books.stream().forEach((publisherList) -> {
+            publisherService.deleteById(publisher.getId());
+        });
     }
 
 }

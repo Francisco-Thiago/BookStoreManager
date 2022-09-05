@@ -32,11 +32,14 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final RentalsService rentalsService;
+
     @Autowired
-    public UserService(UserRepository userRepository, StringPatterns stringPatterns, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, StringPatterns stringPatterns, PasswordEncoder passwordEncoder, RentalsService rentalsService) {
         this.userRepository = userRepository;
         this.stringPatterns = stringPatterns;
         this.passwordEncoder = passwordEncoder;
+        this.rentalsService = rentalsService;
     }
 
     public Page<UserResponseDTO> findAll(Pageable pageable) {
@@ -102,7 +105,10 @@ public class UserService {
     }
 
     public void deleteById(Long id) {
+
         userRepository.deleteById(id);
+        rentalsService.deleteByUser(id);
+
     }
 
     public User verifyAndGetIfExists(Long id) {

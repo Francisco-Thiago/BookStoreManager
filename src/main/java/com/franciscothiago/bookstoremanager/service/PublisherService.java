@@ -28,10 +28,13 @@ public class PublisherService {
 
     private final StringPatterns stringPatterns;
 
+    private final BookService bookService;
+
     @Autowired
-    public PublisherService(PublisherRepository publisherRepository, StringPatterns stringPatterns) {
+    public PublisherService(PublisherRepository publisherRepository, StringPatterns stringPatterns, BookService bookService) {
         this.publisherRepository = publisherRepository;
         this.stringPatterns = stringPatterns;
+        this.bookService = bookService;
     }
 
     public Page<PublisherResponseDTO> findAll(Pageable pageable) {
@@ -75,7 +78,10 @@ public class PublisherService {
     }
 
     public void deleteById(Long id) {
+
         publisherRepository.deleteById(id);
+        bookService.deleteByPublisher(id);
+
     }
 
     public Publisher verifyAndGetIfExists(Long id) {

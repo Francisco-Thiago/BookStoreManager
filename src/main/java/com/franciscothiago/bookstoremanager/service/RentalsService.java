@@ -181,4 +181,20 @@ public class RentalsService {
         }
     }
 
+    public void deleteByUser(Long id) {
+        User user = userService.verifyAndGetIfExists(id);
+        List<Rentals> rentals = rentalsRepository.findByUser(user);
+        rentals.stream().forEach((rentalList) -> {
+            rentalsRepository.deleteById(rentalList.getId());
+        });
+    }
+
+    public void deleteByBook(Long id) {
+        Book book = bookService.verifyAndGetIfExists(id);
+        List<Rentals> rentals = rentalsRepository.findByBook(book);
+        rentals.stream().forEach((rentalList) -> {
+            rentalsRepository.deleteById(rentalList.getId());
+        });
+    }
+
 }
