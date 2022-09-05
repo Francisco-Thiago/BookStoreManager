@@ -7,6 +7,8 @@ import com.franciscothiago.bookstoremanager.dto.RentalsResponseDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsUpdateDTO;
 import com.franciscothiago.bookstoremanager.service.RentalsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +27,8 @@ public class RentalsController implements RentalsControllerDocs {
     }
 
     @GetMapping
-    public List<RentalsResponseDTO> getRentals() {
-        return rentalsService.findAll();
+    public Page<RentalsResponseDTO> getRentals(Pageable pageable) {
+        return rentalsService.findAll(pageable);
     }
 
 

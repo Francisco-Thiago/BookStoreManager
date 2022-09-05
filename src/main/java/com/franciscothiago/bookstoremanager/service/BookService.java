@@ -13,6 +13,8 @@ import com.franciscothiago.bookstoremanager.repository.BookRepository;
 import com.franciscothiago.bookstoremanager.repository.RentalsRepository;
 import com.franciscothiago.bookstoremanager.utils.StringPatterns;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -41,11 +43,9 @@ public class BookService {
         this.stringPatterns = stringPatterns;
     }
 
-    public List<BookResponseDTO> findAll() {
-        return bookRepository.findAll()
-                .stream()
-                .map(bookMapper::toDTO)
-                .collect(Collectors.toList());
+    public Page<BookResponseDTO> findAll(Pageable pageable) {
+        return bookRepository.findAll(pageable)
+                .map(bookMapper::toDTO);
     }
 
     public BookResponseDTO findById(Long id) {

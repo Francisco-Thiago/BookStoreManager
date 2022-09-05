@@ -5,6 +5,8 @@ import com.franciscothiago.bookstoremanager.dto.*;
 import com.franciscothiago.bookstoremanager.service.AuthenticationService;
 import com.franciscothiago.bookstoremanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +28,8 @@ public class UserController implements UserControllerDocs {
     }
 
     @GetMapping
-    public List<UserResponseDTO> getUsers() {
-        return userService.findAll();
+    public Page<UserResponseDTO> getUsers(Pageable pageable) {
+        return userService.findAll(pageable);
     }
 
     @GetMapping("/{id}")

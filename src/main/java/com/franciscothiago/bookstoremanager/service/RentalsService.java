@@ -13,6 +13,8 @@ import com.franciscothiago.bookstoremanager.model.Rentals;
 import com.franciscothiago.bookstoremanager.model.User;
 import com.franciscothiago.bookstoremanager.repository.RentalsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -38,11 +40,9 @@ public class RentalsService {
         this.userService = userService;
     }
 
-    public List<RentalsResponseDTO> findAll() {
-        return rentalsRepository.findAll()
-                .stream()
-                .map(rentalsMapper::toDTO)
-                .collect(Collectors.toList());
+    public Page<RentalsResponseDTO> findAll(Pageable pageable) {
+        return rentalsRepository.findAll(pageable)
+                .map(rentalsMapper::toDTO);
     }
 
     public RentalsResponseDTO findById(Long id) {

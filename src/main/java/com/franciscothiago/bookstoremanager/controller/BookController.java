@@ -6,6 +6,8 @@ import com.franciscothiago.bookstoremanager.dto.BookResponseDTO;
 import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +26,8 @@ public class BookController implements BookControllerDocs {
     }
 
     @GetMapping
-    public List<BookResponseDTO> getBooks() {
-        return bookService.findAll();
+    public Page<BookResponseDTO> getBooks(Pageable pageable) {
+        return bookService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
