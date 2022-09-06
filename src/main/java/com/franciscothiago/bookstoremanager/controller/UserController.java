@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -44,14 +45,14 @@ public class UserController implements UserControllerDocs {
     }
 
     @PutMapping("{id}")
-    public MessageDTO update(@PathVariable Long id, @RequestBody @Valid UserRequestDTO userRequestDTO) {
-        return userService.update(id, userRequestDTO);
+    public MessageDTO update(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @PathVariable Long id, @RequestBody @Valid UserRequestDTO userRequestDTO) {
+        return userService.update(authenticatedUser, id, userRequestDTO);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        userService.deleteById(id);
+    public void delete(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @PathVariable Long id) {
+        userService.deleteById(authenticatedUser, id);
     }
 
     @PostMapping(value = "/authenticate")

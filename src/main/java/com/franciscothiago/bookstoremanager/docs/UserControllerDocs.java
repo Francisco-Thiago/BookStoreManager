@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.List;
 
@@ -39,14 +40,14 @@ public interface UserControllerDocs {
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
     @ApiOperation(value = "Update a user")
-    MessageDTO update(Long id, UserRequestDTO userRequestDTO);
+    MessageDTO update(AuthenticatedUser authenticatedUser, Long id, UserRequestDTO userRequestDTO);
 
     @ApiOperation(value = "Delete a user by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success, id deleted"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    void delete(Long id);
+    void delete(AuthenticatedUser authenticatedUser, Long id);
 
     @ApiOperation(value = "Token Authentication")
     @ApiResponses(value = {

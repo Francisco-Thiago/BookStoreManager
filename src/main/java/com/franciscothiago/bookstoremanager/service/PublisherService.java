@@ -11,6 +11,7 @@ import com.franciscothiago.bookstoremanager.model.Publisher;
 import com.franciscothiago.bookstoremanager.repository.PublisherRepository;
 import com.franciscothiago.bookstoremanager.utils.StringPatterns;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,10 +29,14 @@ public class PublisherService {
 
     private final StringPatterns stringPatterns;
 
+    private final BookService bookService;
+
     @Autowired
-    public PublisherService(PublisherRepository publisherRepository, StringPatterns stringPatterns) {
+    @Lazy
+    public PublisherService(PublisherRepository publisherRepository, StringPatterns stringPatterns, BookService bookService) {
         this.publisherRepository = publisherRepository;
         this.stringPatterns = stringPatterns;
+        this.bookService = bookService;
     }
 
     public Page<PublisherResponseDTO> findAll(Pageable pageable) {
@@ -75,7 +80,10 @@ public class PublisherService {
     }
 
     public void deleteById(Long id) {
+
+        bookService.verifyByPublisher(id);
         publisherRepository.deleteById(id);
+
     }
 
     public Publisher verifyAndGetIfExists(Long id) {

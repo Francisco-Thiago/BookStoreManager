@@ -1,16 +1,17 @@
 package com.franciscothiago.bookstoremanager.service;
 
+import com.franciscothiago.bookstoremanager.dto.AuthenticatedUser;
 import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.dto.UserRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.UserResponseDTO;
-import com.franciscothiago.bookstoremanager.exception.BookNotFoundException;
-import com.franciscothiago.bookstoremanager.exception.UpdateHasNoChangesException;
-import com.franciscothiago.bookstoremanager.exception.UserAlreadyExistsException;
+import com.franciscothiago.bookstoremanager.enums.Role;
+import com.franciscothiago.bookstoremanager.exception.*;
 import com.franciscothiago.bookstoremanager.mapper.UserMapper;
 import com.franciscothiago.bookstoremanager.model.User;
 import com.franciscothiago.bookstoremanager.repository.UserRepository;
 import com.franciscothiago.bookstoremanager.utils.StringPatterns;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,11 +33,15 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final RentalsService rentalsService;
+
     @Autowired
-    public UserService(UserRepository userRepository, StringPatterns stringPatterns, PasswordEncoder passwordEncoder) {
+    @Lazy
+    public UserService(UserRepository userRepository, StringPatterns stringPatterns, PasswordEncoder passwordEncoder, RentalsService rentalsService) {
         this.userRepository = userRepository;
         this.stringPatterns = stringPatterns;
         this.passwordEncoder = passwordEncoder;
+        this.rentalsService = rentalsService;
     }
 
     public Page<UserResponseDTO> findAll(Pageable pageable) {
@@ -69,7 +74,7 @@ public class UserService {
 
     }
 
-    public MessageDTO update(Long id, UserRequestDTO userRequestDTO) {
+    public MessageDTO update(AuthenticatedUser authenticatedUser, Long id, UserRequestDTO userRequestDTO) {
         User foundUser = verifyAndGetIfExists(id);
         userRequestDTO.setUsername(userRequestDTO.getUsername().toUpperCase());
         stringPatterns.onlyStringsValidator(userRequestDTO.getUsername());
@@ -101,13 +106,30 @@ public class UserService {
                 .build();
     }
 
-    public void deleteById(Long id) {
-        userRepository.deleteById(id);
+    public void deleteById(AuthenticatedUser authenticatedUser, Long id) {
+        User currentUser = verifyAndGetIfExistsByUsername(authenticatedUser.getUsername());
+        Long idUserFound = verifyAndGetIfExists(id).getId();
+        String role = currentUser.getRole().getDescription();
+        rentalsService.verifyRentalsOfUsers(idUserFound);
+
+        if(Role.ADMIN.getDescription() == role && id != currentUser.getId()) {
+            userRepository.deleteById(id);
+        } else if(currentUser.getId() == idUserFound){
+            throw new UserInUseException("User id is the same!");
+        } else {
+            throw new RoleNotAllowedException("Role USER cannot delete users, only admins!");
+        }
+
     }
 
     public User verifyAndGetIfExists(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserAlreadyExistsException(id));
+                .orElseThrow(() -> new InvalidStringException("User with id "+id+" is invalid."));
+    }
+
+    public User verifyAndGetIfExistsByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserAlreadyExistsException(username));
     }
 
     private void verifyIfExistsByEmail(String email) {

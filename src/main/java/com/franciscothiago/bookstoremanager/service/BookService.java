@@ -5,6 +5,7 @@ import com.franciscothiago.bookstoremanager.dto.BookResponseDTO;
 import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.exception.BookAlreadyExistsException;
 import com.franciscothiago.bookstoremanager.exception.BookNotFoundException;
+import com.franciscothiago.bookstoremanager.exception.PublisherIsNotPossibleToUpdateException;
 import com.franciscothiago.bookstoremanager.exception.UpdateHasNoChangesException;
 import com.franciscothiago.bookstoremanager.mapper.BookMapper;
 import com.franciscothiago.bookstoremanager.model.Book;
@@ -13,6 +14,7 @@ import com.franciscothiago.bookstoremanager.repository.BookRepository;
 import com.franciscothiago.bookstoremanager.repository.RentalsRepository;
 import com.franciscothiago.bookstoremanager.utils.StringPatterns;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,12 +37,16 @@ public class BookService {
 
     private StringPatterns stringPatterns;
 
+    private RentalsService rentalsService;
+
     @Autowired
-    public BookService(BookRepository bookRepository, PublisherService publisherService, RentalsRepository rentalsRepository, StringPatterns stringPatterns) {
+    @Lazy
+    public BookService(BookRepository bookRepository, PublisherService publisherService, RentalsRepository rentalsRepository, StringPatterns stringPatterns, RentalsService rentalsService) {
         this.bookRepository = bookRepository;
         this.publisherService = publisherService;
         this.rentalsRepository = rentalsRepository;
         this.stringPatterns = stringPatterns;
+        this.rentalsService = rentalsService;
     }
 
     public Page<BookResponseDTO> findAll(Pageable pageable) {
@@ -104,7 +110,10 @@ public class BookService {
     }
 
     public void deleteById(Long id) {
+
         bookRepository.deleteById(id);
+        rentalsService.deleteByBook(id);
+
     }
 
     private void verifyIfExists(String name) {
@@ -127,10 +136,8 @@ public class BookService {
     }
 
     public void incrementQuantity(Book book) {
-        if(book.getQuantity() > 0) {
-            book.setQuantity(book.getQuantity() - 1);
+            book.setQuantity(book.getQuantity() + 1);
             bookRepository.save(book);
-        }
     }
 
     private void checkForChangesToUpdate(Book foundBook, Book newBook) {
@@ -149,6 +156,16 @@ public class BookService {
         Optional<Book> foundBook = bookRepository.findByIdOrNameOrCode(id, name, code);
         if(foundBook.isPresent()) {
             throw new BookAlreadyExistsException(id, name, code);
+        }
+    }
+
+    public boolean verifyByPublisher(Long id) {
+        Publisher publisher = publisherService.verifyAndGetIfExists(id);
+        List<Book> books = bookRepository.findByPublisher(publisher);
+        if(books.size() > 0) {
+            throw new PublisherIsNotPossibleToUpdateException("Publisher contains books registred. Delete before.");
+        } else {
+            return true;
         }
     }
 
