@@ -21,6 +21,7 @@ public class RentalsUpdateDTO {
     @NotNull
     private Long bookId;
 
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate returnDate;
 

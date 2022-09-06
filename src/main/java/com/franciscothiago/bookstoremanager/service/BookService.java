@@ -136,10 +136,8 @@ public class BookService {
     }
 
     public void incrementQuantity(Book book) {
-        if(book.getQuantity() > 0) {
-            book.setQuantity(book.getQuantity() - 1);
+            book.setQuantity(book.getQuantity() + 1);
             bookRepository.save(book);
-        }
     }
 
     private void checkForChangesToUpdate(Book foundBook, Book newBook) {
