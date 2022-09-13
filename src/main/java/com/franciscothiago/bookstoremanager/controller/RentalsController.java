@@ -4,7 +4,7 @@ import com.franciscothiago.bookstoremanager.docs.RentalsControllerDocs;
 import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsResponseDTO;
-import com.franciscothiago.bookstoremanager.dto.RentalsUpdateDTO;
+import com.franciscothiago.bookstoremanager.dto.RentalsUpdateOnlyExpirationDTO;
 import com.franciscothiago.bookstoremanager.service.RentalsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/rentals")
@@ -43,9 +42,19 @@ public class RentalsController implements RentalsControllerDocs {
        return rentalsService.create(rentalsRequestDTO);
     }
 
-    @PutMapping("{id}")
-    public MessageDTO update(@PathVariable Long id, @RequestBody @Valid RentalsUpdateDTO rentalsUpdateDTO) {
-        return rentalsService.update(id, rentalsUpdateDTO);
+//    @PutMapping("{id}")
+//    public MessageDTO update(@PathVariable Long id, @RequestBody @Valid RentalsUpdateDTO rentalsUpdateDTO) {
+//        return rentalsService.update(id, rentalsUpdateDTO);
+//    }
+
+    @PutMapping("/expiration/{id}")
+    public MessageDTO updateOnlyExpiration(@PathVariable Long id, @RequestBody @Valid RentalsUpdateOnlyExpirationDTO rentalsUpdateOnlyExpirationDTO) {
+        return rentalsService.updateExpiration(id, rentalsUpdateOnlyExpirationDTO);
+    }
+
+    @PutMapping("/return/{id}")
+    public MessageDTO updateOnlyReturn(@PathVariable Long id) {
+        return rentalsService.updateReturn(id);
     }
 
     @DeleteMapping("/{id}")
