@@ -14,7 +14,9 @@ public class AuthenticatedUser implements UserDetails {
     private static final String ROLE_PREFIX = "ROLE_";
 
     private String username;
+
     private String password;
+
     private String role;
 
     @Override

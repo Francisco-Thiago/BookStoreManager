@@ -4,7 +4,7 @@ import com.franciscothiago.bookstoremanager.docs.RentalsControllerDocs;
 import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsResponseDTO;
-import com.franciscothiago.bookstoremanager.dto.RentalsUpdateOnlyExpirationDTO;
+import com.franciscothiago.bookstoremanager.dto.RentalsUpdateDTO;
 import com.franciscothiago.bookstoremanager.service.RentalsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,8 +48,8 @@ public class RentalsController implements RentalsControllerDocs {
 //    }
 
     @PutMapping("/expiration/{id}")
-    public MessageDTO updateOnlyExpiration(@PathVariable Long id, @RequestBody @Valid RentalsUpdateOnlyExpirationDTO rentalsUpdateOnlyExpirationDTO) {
-        return rentalsService.updateExpiration(id, rentalsUpdateOnlyExpirationDTO);
+    public MessageDTO updateOnlyExpiration(@PathVariable Long id, @RequestBody @Valid RentalsUpdateDTO rentalsUpdateDTO) {
+        return rentalsService.updateExpiration(id, rentalsUpdateDTO);
     }
 
     @PutMapping("/return/{id}")

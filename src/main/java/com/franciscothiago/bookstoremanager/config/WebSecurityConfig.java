@@ -65,7 +65,8 @@ public class WebSecurityConfig {
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable()
+        httpSecurity.cors().and()
+                .csrf().disable()
                 .authorizeHttpRequests().antMatchers(SWAGGER_URL).permitAll()
                 .antMatchers(HttpMethod.POST, USERS_API_URL).permitAll()
                 .antMatchers(HttpMethod.GET, PUBLISHERS_API_URL).permitAll()

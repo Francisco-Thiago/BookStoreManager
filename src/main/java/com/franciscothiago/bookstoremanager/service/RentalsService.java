@@ -4,7 +4,7 @@ package com.franciscothiago.bookstoremanager.service;
 import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsResponseDTO;
-import com.franciscothiago.bookstoremanager.dto.RentalsUpdateOnlyExpirationDTO;
+import com.franciscothiago.bookstoremanager.dto.RentalsUpdateDTO;
 import com.franciscothiago.bookstoremanager.enums.Status;
 import com.franciscothiago.bookstoremanager.exception.*;
 import com.franciscothiago.bookstoremanager.mapper.RentalsMapper;
@@ -97,10 +97,10 @@ public class RentalsService {
                 .build();
     }
 
-    public MessageDTO updateExpiration(Long id, RentalsUpdateOnlyExpirationDTO rentalsUpdateOnlyExpirationDTO) {
+    public MessageDTO updateExpiration(Long id, RentalsUpdateDTO rentalsUpdateDTO) {
         Rentals rentalToCreate = verifyAndGetIfExists(id);
-        checkIfUpdateDateIsTheSame(rentalToCreate.getExpirationDate(), rentalsUpdateOnlyExpirationDTO.getExpirationDate());
-        rentalToCreate.setExpirationDate(rentalsUpdateOnlyExpirationDTO.getExpirationDate());
+        checkIfUpdateDateIsTheSame(rentalToCreate.getExpirationDate(), rentalsUpdateDTO.getExpirationDate());
+        rentalToCreate.setExpirationDate(rentalsUpdateDTO.getExpirationDate());
         verifyExpirationDate(rentalToCreate.getExpirationDate(), rentalToCreate.getEntryDate());
         rentalToCreate.setStatus(defineEnumTypeValue(rentalToCreate.getReturnDate(), rentalToCreate.getExpirationDate()));
         Rentals createdRental = rentalsRepository.save(rentalToCreate);
@@ -156,7 +156,7 @@ public class RentalsService {
     private void verifyIfCreateIsPossible(User user, Book book) {
         Optional<Rentals> foundRental = rentalsRepository.findByUserAndBookAndStatus(user, book, Status.WAITING);
 
-        if(!foundRental.isPresent()) {
+        if(foundRental.isPresent()) {
             throw new RentalUpdateIsNotPossibleException("The user has not yet returned the past book.");
         }
     }

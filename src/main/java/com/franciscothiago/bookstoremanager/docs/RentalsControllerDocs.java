@@ -3,7 +3,7 @@ package com.franciscothiago.bookstoremanager.docs;
 import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsResponseDTO;
-import com.franciscothiago.bookstoremanager.dto.RentalsUpdateOnlyExpirationDTO;
+import com.franciscothiago.bookstoremanager.dto.RentalsUpdateDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -40,7 +40,7 @@ public interface RentalsControllerDocs {
             @ApiResponse(code = 200, message = "Rental updated!"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    MessageDTO updateOnlyExpiration(Long id, RentalsUpdateOnlyExpirationDTO rentalsUpdateDTO);
+    MessageDTO updateOnlyExpiration(Long id, RentalsUpdateDTO rentalsUpdateDTO);
 
     @ApiOperation(value = "Update a rental by return.")
     @ApiResponses(value = {

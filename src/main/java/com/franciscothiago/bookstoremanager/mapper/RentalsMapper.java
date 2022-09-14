@@ -13,10 +13,6 @@ public interface RentalsMapper {
 
     Rentals toModel(RentalsRequestDTO rentalsRequestDTO);
 
-//    Rentals toModel(RentalsResponseDTO rentalsResponseDTO);
-
-//    Rentals toModel(RentalsUpdateDTO rentalsUpdateDTO);
-
     RentalsResponseDTO toDTO(Rentals rentals);
 
 }
