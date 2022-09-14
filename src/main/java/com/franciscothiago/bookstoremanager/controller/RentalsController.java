@@ -16,6 +16,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/v1/rentals")
+@CrossOrigin(origins = "*")
 public class RentalsController implements RentalsControllerDocs {
 
     private final RentalsService rentalsService;

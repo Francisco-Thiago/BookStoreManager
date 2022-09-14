@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/publishers")
+@CrossOrigin(origins = "*")
 public class PublisherController implements PublisherControllerDocs {
 
     private final PublisherService publisherService;

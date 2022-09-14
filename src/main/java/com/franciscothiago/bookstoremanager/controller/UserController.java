@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/users")
+@CrossOrigin(origins = "*")
 public class UserController implements UserControllerDocs {
 
     private final UserService userService;
@@ -37,15 +38,26 @@ public class UserController implements UserControllerDocs {
         return userService.findById(id);
     }
 
-    @PostMapping
+    @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
-    public MessageDTO create(@RequestBody @Valid UserRequestDTO userToCreateDTO) {
-        return userService.create(userToCreateDTO);
+    public MessageDTO createUser(@RequestBody @Valid UserDTO userDTO) {
+        return userService.createUser(userDTO);
     }
 
-    @PutMapping("{id}")
-    public MessageDTO update(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @PathVariable Long id, @RequestBody @Valid UserRequestDTO userRequestDTO) {
-        return userService.update(authenticatedUser, id, userRequestDTO);
+    @PostMapping("/admin")
+    @ResponseStatus(HttpStatus.CREATED)
+    public MessageDTO createAdmin(@RequestBody @Valid UserAdminDTO userAdminDTO) {
+        return userService.createAdmin(userAdminDTO);
+    }
+
+    @PutMapping("/user/{id}")
+    public MessageDTO updateUser(@PathVariable Long id, @RequestBody @Valid UserDTO userDTO) {
+        return userService.updateUser(id, userDTO);
+    }
+
+    @PutMapping("/admin/{id}")
+    public MessageDTO updateAdmin(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @PathVariable Long id, @RequestBody @Valid UserAdminDTO userAdminDTO) {
+        return userService.updateAdmin(authenticatedUser, id, userAdminDTO);
     }
 
     @DeleteMapping("/{id}")

@@ -75,7 +75,7 @@ public class RentalsService {
 
         Rentals rentalsCreated = rentalsRepository.save(rentalsToCreate);
 
-        String createdMessage = String.format("Rental with id %s was created successfully", rentalsCreated.getId());
+        String createdMessage = String.format("Aluguel com id %s foi criado com sucesso.", rentalsCreated.getId());
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -90,7 +90,7 @@ public class RentalsService {
         rentalToCreate.setStatus(defineEnumTypeValue(rentalToCreate.getReturnDate(), rentalToCreate.getExpirationDate()));
         Rentals createdRental = rentalsRepository.save(rentalToCreate);
 
-        String createdMessage = String.format("Rental with id %d has been updated successfully", createdRental.getId());
+        String createdMessage = String.format("Aluguel com id %d foi retornado com sucesso.", createdRental.getId());
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -105,7 +105,7 @@ public class RentalsService {
         rentalToCreate.setStatus(defineEnumTypeValue(rentalToCreate.getReturnDate(), rentalToCreate.getExpirationDate()));
         Rentals createdRental = rentalsRepository.save(rentalToCreate);
 
-        String createdMessage = String.format("Rental with id %d has been updated successfully", createdRental.getId());
+        String createdMessage = String.format("Aluguel com id %d foi atualizado com sucesso.", createdRental.getId());
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -121,7 +121,7 @@ public class RentalsService {
 
     private void verifyIfReturnAlreadyExists(LocalDate returnDate) {
         if(returnDate != null) {
-            throw new RentalUpdateIsNotPossibleException("Rental cannot be returned again!");
+            throw new RentalUpdateIsNotPossibleException("O aluguel não pode ser retornado novamente.");
         }
     }
 
@@ -157,13 +157,13 @@ public class RentalsService {
         Optional<Rentals> foundRental = rentalsRepository.findByUserAndBookAndStatus(user, book, Status.WAITING);
 
         if(foundRental.isPresent()) {
-            throw new RentalUpdateIsNotPossibleException("The user has not yet returned the past book.");
+            throw new RentalUpdateIsNotPossibleException("O usuário não retornou o último livro.");
         }
     }
 
     private void checkIfUpdateDateIsTheSame(LocalDate oldDate, LocalDate newDate) {
         if(oldDate.isEqual(newDate)) {
-            throw new UpdateHasNoChangesException("Unable to update the same data.");
+            throw new UpdateHasNoChangesException("Não há alteração nos dados passados.");
         }
     }
 
@@ -181,7 +181,7 @@ public class RentalsService {
 
     private void verifyAuthenticityOfDates(LocalDate entryDate, LocalDate expirationDate) {
         if(expirationDate.compareTo(entryDate) < 0) {
-            throw new InvalidDateException("Date of return or expiration is invalid.");
+            throw new InvalidDateException("A data de retorno ou de expiração é inválida.");
         }
     }
 
@@ -191,7 +191,7 @@ public class RentalsService {
         System.out.println(rentals);
 
         if(rentals.size() > 0) {
-            throw new RentalUpdateIsNotPossibleException("Rentals contains the user informed. Delete the rentals before.");
+            throw new RentalUpdateIsNotPossibleException("Não é possível excluir este usuário. Exclua os aluguéis associados para poder realizar esta função.");
         } else {
             return true;
         }

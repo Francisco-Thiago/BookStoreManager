@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/books")
+@CrossOrigin(origins = "*")
 public class BookController implements BookControllerDocs {
 
     private final BookService bookService;
