@@ -10,8 +10,6 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 @Api("Book management")
 public interface BookControllerDocs {
 

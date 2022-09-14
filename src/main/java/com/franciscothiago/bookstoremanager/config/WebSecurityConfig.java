@@ -1,10 +1,11 @@
 package com.franciscothiago.bookstoremanager.config;
+
 import com.franciscothiago.bookstoremanager.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -64,7 +65,8 @@ public class WebSecurityConfig {
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable()
+        httpSecurity.cors().and()
+                .csrf().disable()
                 .authorizeHttpRequests().antMatchers(SWAGGER_URL).permitAll()
                 .antMatchers(HttpMethod.POST, USERS_API_URL).permitAll()
                 .antMatchers(HttpMethod.GET, PUBLISHERS_API_URL).permitAll()

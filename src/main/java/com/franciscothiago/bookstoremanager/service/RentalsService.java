@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class RentalsService {
@@ -64,7 +63,6 @@ public class RentalsService {
         verifyIfCreateIsPossible(foundUser, foundBook);
         verifyBookQuantity(foundBook);
 
-
         Rentals rentalsToCreate = rentalsMapper.toModel(rentalsRequestDTO);
         rentalsToCreate.setBook(foundBook);
         rentalsToCreate.setUser(foundUser);
@@ -84,30 +82,14 @@ public class RentalsService {
                 .build();
     }
 
-    private void verifyBookQuantity(Book book) {
-        if(book.getQuantity() <= 0) {
-            throw new RentalIsNotPossibleException("Book quantity is 0");
-        }
-    }
-
-    public MessageDTO update(Long id, RentalsUpdateDTO rentalsUpdateDTO) {
-        Rentals foundRental = verifyAndGetIfExists(id); // SEM
-        User foundUser = userService.verifyAndGetIfExists(rentalsUpdateDTO.getUserId()); // SEM
-        Book foundBook = bookService.verifyAndGetIfExists(rentalsUpdateDTO.getBookId()); // SEM
-
-        verifyIfUpdateIsPossible(id, foundUser, foundBook); // AQUI
-
-        rentalsUpdateDTO.setId(foundRental.getId()); // SEM
-        Rentals rentalToCreate = rentalsMapper.toModel(rentalsUpdateDTO); // SEM
-        rentalToCreate.setUser(foundUser); // SEM
-        rentalToCreate.setBook(foundBook); // SEM
-        rentalToCreate.setEntryDate(foundRental.getEntryDate()); // SEM
-        verifyAuthenticityOfDates(rentalToCreate); // SEM
-        rentalToCreate.setStatus(defineEnumTypeValue(rentalToCreate.getReturnDate(), rentalToCreate.getExpirationDate())); // SEM
-        checkIfUpdateIsTheSame(foundRental, rentalToCreate); // SEM
-        verifyQuantityAndSet(foundRental.getReturnDate(), rentalToCreate.getReturnDate(), foundBook); // SEM
-        verifyIfBookStatusWasNull(id, foundBook);
+    public MessageDTO updateReturn(Long id) {
+        Rentals rentalToCreate = verifyAndGetIfExists(id);
+        verifyIfReturnAlreadyExists(rentalToCreate.getReturnDate());
+        verifyQuantityAndSet(rentalToCreate.getReturnDate(), rentalToCreate.getBook());
+        rentalToCreate.setReturnDate(LocalDate.now());
+        rentalToCreate.setStatus(defineEnumTypeValue(rentalToCreate.getReturnDate(), rentalToCreate.getExpirationDate()));
         Rentals createdRental = rentalsRepository.save(rentalToCreate);
+
         String createdMessage = String.format("Rental with id %d has been updated successfully", createdRental.getId());
 
         return MessageDTO.builder()
@@ -115,11 +97,31 @@ public class RentalsService {
                 .build();
     }
 
-    private void verifyQuantityAndSet(LocalDate foundDate, LocalDate newDate, Book book) {
-        if(foundDate == null && newDate != null) {
-            bookService.incrementQuantity(book);
-        } else if(foundDate != null && newDate == null) {
-            bookService.decrementQuantity(book);
+    public MessageDTO updateExpiration(Long id, RentalsUpdateDTO rentalsUpdateDTO) {
+        Rentals rentalToCreate = verifyAndGetIfExists(id);
+        checkIfUpdateDateIsTheSame(rentalToCreate.getExpirationDate(), rentalsUpdateDTO.getExpirationDate());
+        rentalToCreate.setExpirationDate(rentalsUpdateDTO.getExpirationDate());
+        verifyExpirationDate(rentalToCreate.getExpirationDate(), rentalToCreate.getEntryDate());
+        rentalToCreate.setStatus(defineEnumTypeValue(rentalToCreate.getReturnDate(), rentalToCreate.getExpirationDate()));
+        Rentals createdRental = rentalsRepository.save(rentalToCreate);
+
+        String createdMessage = String.format("Rental with id %d has been updated successfully", createdRental.getId());
+
+        return MessageDTO.builder()
+                .message(createdMessage)
+                .build();
+    }
+
+
+    private void verifyBookQuantity(Book book) {
+        if(book.getQuantity() <= 0) {
+            throw new RentalIsNotPossibleException("Book quantity is 0");
+        }
+    }
+
+    private void verifyIfReturnAlreadyExists(LocalDate returnDate) {
+        if(returnDate != null) {
+            throw new RentalUpdateIsNotPossibleException("Rental cannot be returned again!");
         }
     }
 
@@ -139,42 +141,28 @@ public class RentalsService {
                 .orElseThrow(() -> new RentalsAlreadyExistsException(id));
     }
 
-    private void verifyAuthenticityOfDates(Rentals rental) {
-        LocalDate entryDate = rental.getEntryDate();
-        LocalDate returnDate = rental.getReturnDate();
-        LocalDate expirationDate = rental.getExpirationDate();
-
-        if(returnDate.compareTo(entryDate) < 0 || expirationDate.compareTo(entryDate) < 0) {
-            throw new InvalidDateException("Date of return or expiration is invalid.");
+    private void verifyExpirationDate(LocalDate expirationDate, LocalDate entryDate) {
+        if(expirationDate.isBefore(entryDate)) {
+            throw new InvalidDateException(expirationDate.toString());
         }
     }
 
-    private void verifyIfBookStatusWasNull(Long id, Book book) {
-        Optional<Rentals> rental = rentalsRepository.findById(id).filter(rent -> rent.getStatus() != Status.WAITING);
-        if(!rental.isPresent()) {
-            bookService.incrementQuantity(book);
+    private void verifyQuantityAndSet(LocalDate returnDate, Book book) {
+        if(returnDate == null) {
+            bookService.decrementQuantity(book);
         }
     }
 
     private void verifyIfCreateIsPossible(User user, Book book) {
-        Optional<Rentals> foundRental = rentalsRepository.findByUserAndBook(user, book).filter(rentals -> rentals.getReturnDate() == null);
+        Optional<Rentals> foundRental = rentalsRepository.findByUserAndBookAndStatus(user, book, Status.WAITING);
 
         if(foundRental.isPresent()) {
             throw new RentalUpdateIsNotPossibleException("The user has not yet returned the past book.");
         }
     }
 
-    private boolean verifyIfUpdateIsPossible(Long id, User user, Book book) {
-        Optional<Rentals> foundRental = rentalsRepository.findByUserAndBookAndStatus(user, book, Status.WAITING).filter(rentals -> rentals.getId() != id);
-        if(foundRental.isPresent()) {
-            throw new RentalUpdateIsNotPossibleException("Unable to try to recreate a record.");
-        } else {
-            return true;
-        }
-    }
-
-    private void checkIfUpdateIsTheSame(Rentals foundRental, Rentals newRental) {
-        if(foundRental.equals(newRental)) {
+    private void checkIfUpdateDateIsTheSame(LocalDate oldDate, LocalDate newDate) {
+        if(oldDate.isEqual(newDate)) {
             throw new UpdateHasNoChangesException("Unable to update the same data.");
         }
     }
