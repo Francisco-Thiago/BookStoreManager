@@ -72,7 +72,7 @@ public class BookService {
         bookToCreate.setPublisher(foundPublisher);
         Book createdBook = bookRepository.save(bookToCreate);
 
-        String createdMessage = String.format("Book %s with id %d was created successfully",  createdBook.getName(), createdBook.getId());
+        String createdMessage = String.format("Livro %s com o id %d foi criado com sucesso!",  createdBook.getName(), createdBook.getId());
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -101,7 +101,7 @@ public class BookService {
 
         Book createdBook = bookRepository.save(bookToCreate);
 
-        String createdMessage = String.format("Book with id %d has been updated successfully", createdBook.getId());
+        String createdMessage = String.format("Livro com o id %d foi atualizado com sucesso!", createdBook.getId());
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -141,7 +141,7 @@ public class BookService {
 
     private void checkForChangesToUpdate(Book foundBook, Book newBook) {
         if(foundBook.equals(newBook)) {
-            throw new UpdateHasNoChangesException("Book has no changes");
+            throw new UpdateHasNoChangesException("Livro não possui mudanças.");
         }
     }
 
@@ -162,7 +162,7 @@ public class BookService {
         Publisher publisher = publisherService.verifyAndGetIfExists(id);
         List<Book> books = bookRepository.findByPublisher(publisher);
         if(books.size() > 0) {
-            throw new PublisherIsNotPossibleToUpdateException("Publisher contains books registred. Delete before.");
+            throw new PublisherIsNotPossibleToUpdateException("Editora contém livros registrdos. Por favor, os delete antes.");
         } else {
             return true;
         }

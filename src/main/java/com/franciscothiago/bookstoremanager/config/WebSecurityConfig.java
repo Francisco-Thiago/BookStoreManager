@@ -23,6 +23,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
+
+    private static final String ALL_USERS_API_URL = "/api/v1/users";
     private static final String USERS_API_URL = "/api/v1/users/user/**";
     private static final String USERS_ADMIN_API_URL = "/api/v1/users/admin/**";
     private static final String PUBLISHERS_API_URL = "/api/v1/publishers/**";
@@ -71,6 +73,7 @@ public class WebSecurityConfig {
         httpSecurity.cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests().antMatchers(SWAGGER_URL).permitAll()
+                .antMatchers(HttpMethod.GET, ALL_USERS_API_URL).permitAll()
                 .antMatchers(BOOKS_API_URL, PUBLISHERS_API_URL, USERS_API_URL, USERS_API_URL, RENTALS_API_URL).permitAll()
                 .antMatchers(USERS_ADMIN_API_URL).hasAnyRole(ROLE_ADMIN)
                 .anyRequest().authenticated()

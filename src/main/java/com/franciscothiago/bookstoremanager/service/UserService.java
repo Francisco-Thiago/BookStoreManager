@@ -40,6 +40,7 @@ public class UserService {
     }
 
     public Page<UserResponseDTO> findAll(Pageable pageable) {
+        createDefaultUser();
         return userRepository.findAll(pageable)
                 .map(userMapper::toDTO);
     }
@@ -145,20 +146,26 @@ public class UserService {
                 .build();
     }
 
-    public void deleteById(AuthenticatedUser authenticatedUser, Long id) {
+    public void deleteUser(Long id){
+        User user = verifyAndGetIfExists(id);
+        String role = user.getRole().getDescription();
+        rentalsService.verifyRentalsOfUsers(id);
+        userRepository.deleteById(id);
+    }
+
+
+    public void deleteAdmin(AuthenticatedUser authenticatedUser, Long id) {
         User currentUser = verifyAndGetIfExistsByUsername(authenticatedUser.getUsername());
         Long idUserFound = verifyAndGetIfExists(id).getId();
         String role = currentUser.getRole().getDescription();
-        rentalsService.verifyRentalsOfUsers(idUserFound);
 
         if(Role.ADMIN.getDescription() == role && id != currentUser.getId()) {
             userRepository.deleteById(id);
         } else if(currentUser.getId() == idUserFound){
-            throw new UserInUseException("O id do usuário é o mesmo!");
+            throw new UserInUseException("O usuário está em uso!");
         } else {
-            throw new RoleNotAllowedException("Cargo \"usuário\" não pode deletar outros usuários, apenas administradores!");
+            throw new RoleNotAllowedException("Um erro inesperado ocorreu!");
         }
-
     }
 
     public User verifyAndGetIfExists(Long id) {
@@ -169,6 +176,19 @@ public class UserService {
     public User verifyAndGetIfExistsByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserAlreadyExistsException(username));
+    }
+
+    private void createDefaultUser() {
+        if(userRepository.findAll().size() == 0) {
+            UserAdminDTO userToCrete = UserAdminDTO.builder()
+                    .address("Example")
+                    .city("Example")
+                    .name("ADMIN")
+                    .password(passwordEncoder.encode("admin"))
+                    .email("admin@gmail.com")
+                    .build();
+            User createdUser = userRepository.save(userMapper.toModel(userToCrete));
+        }
     }
 
     private void verifyIfExistsByEmail(String email) {

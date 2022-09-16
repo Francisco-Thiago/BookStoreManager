@@ -60,10 +60,16 @@ public class UserController implements UserControllerDocs {
         return userService.updateAdmin(authenticatedUser, id, userAdminDTO);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @PathVariable Long id) {
-        userService.deleteById(authenticatedUser, id);
+    public void deleteAdmin(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @PathVariable Long id) {
+        userService.deleteAdmin(authenticatedUser, id);
+    }
+
+    @DeleteMapping("/user/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAdmin(@PathVariable Long id) {
+        userService.deleteUser(id);
     }
 
     @PostMapping(value = "/authenticate")

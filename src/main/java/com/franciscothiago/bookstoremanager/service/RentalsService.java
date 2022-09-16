@@ -5,6 +5,7 @@ import com.franciscothiago.bookstoremanager.dto.MessageDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsRequestDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsResponseDTO;
 import com.franciscothiago.bookstoremanager.dto.RentalsUpdateDTO;
+import com.franciscothiago.bookstoremanager.enums.Role;
 import com.franciscothiago.bookstoremanager.enums.Status;
 import com.franciscothiago.bookstoremanager.exception.*;
 import com.franciscothiago.bookstoremanager.mapper.RentalsMapper;
@@ -60,6 +61,7 @@ public class RentalsService {
         verifyIfExists(rentalsRequestDTO.getId());
         Book foundBook = bookService.verifyAndGetIfExists(rentalsRequestDTO.getBookId());
         User foundUser = userService.verifyAndGetIfExists(rentalsRequestDTO.getUserId());
+        verifyUserRole(foundUser.getRole().getDescription());
         verifyIfCreateIsPossible(foundUser, foundBook);
         verifyBookQuantity(foundBook);
 
@@ -115,7 +117,7 @@ public class RentalsService {
 
     private void verifyBookQuantity(Book book) {
         if(book.getQuantity() <= 0) {
-            throw new RentalIsNotPossibleException("Book quantity is 0");
+            throw new RentalIsNotPossibleException("Quantidade de livros é 0!");
         }
     }
 
@@ -158,6 +160,12 @@ public class RentalsService {
 
         if(foundRental.isPresent()) {
             throw new RentalUpdateIsNotPossibleException("O usuário não retornou o último livro.");
+        }
+    }
+
+    private void verifyUserRole(String role) {
+        if(role == Role.ADMIN.getDescription()) {
+            throw new RoleNotAllowedException("Administradores do sistema não podem alugar livros!");
         }
     }
 

@@ -50,12 +50,11 @@ public class PublisherService {
 
     public MessageDTO create(PublisherRequestDTO publisherRequestDTO) {
         verifyIfExists(publisherRequestDTO.getName(), publisherRequestDTO.getCode());
-
         Publisher publisherToCreate = publisherMapper.toModel(publisherRequestDTO);
         publisherToCreate.setRegistrationDate(LocalDate.now());
         Publisher createdPublisher = publisherRepository.save(publisherToCreate);
 
-        String createdMessage = String.format("Publisher %s with id %s successfully created", createdPublisher.getName(), createdPublisher.getId());
+        String createdMessage = String.format("Editora %s com o id %s foi criada com sucesso!", createdPublisher.getName(), createdPublisher.getId());
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -70,7 +69,7 @@ public class PublisherService {
         checkForChangesToUpdate(foundPublisher, publisherToCreate);
         Publisher createdPublisher = publisherRepository.save(publisherToCreate);
 
-        String createdMessage = String.format("Publisher with id %d has been updated successfully", createdPublisher.getId());
+        String createdMessage = String.format("Editora com o id %d foi atualizada com sucesso!", createdPublisher.getId());
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -98,7 +97,7 @@ public class PublisherService {
 
     private void checkForChangesToUpdate(Publisher foundPublisher, Publisher publisherToCreate) {
         if(foundPublisher.equals(publisherToCreate)) {
-            throw new UpdateHasNoChangesException("Publisher has no changes.");
+            throw new UpdateHasNoChangesException("Editora não possui mudanças.");
         }
     }
 
