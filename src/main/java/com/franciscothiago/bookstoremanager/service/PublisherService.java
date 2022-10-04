@@ -52,9 +52,9 @@ public class PublisherService {
         verifyIfExists(publisherRequestDTO.getName(), publisherRequestDTO.getCode());
         Publisher publisherToCreate = publisherMapper.toModel(publisherRequestDTO);
         publisherToCreate.setRegistrationDate(LocalDate.now());
-        Publisher createdPublisher = publisherRepository.save(publisherToCreate);
+        publisherRepository.save(publisherToCreate);
 
-        String createdMessage = String.format("Editora %s com o id %s foi criada com sucesso!", createdPublisher.getName(), createdPublisher.getId());
+        String createdMessage = "Editora criada com sucesso!";
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -69,18 +69,22 @@ public class PublisherService {
         checkForChangesToUpdate(foundPublisher, publisherToCreate);
         Publisher createdPublisher = publisherRepository.save(publisherToCreate);
 
-        String createdMessage = String.format("Editora com o id %d foi atualizada com sucesso!", createdPublisher.getId());
+        String createdMessage = "Editora atualizada com sucesso!";
 
         return MessageDTO.builder()
                 .message(createdMessage)
                 .build();
     }
 
-    public void deleteById(Long id) {
-
+    public MessageDTO deleteById(Long id) {
         bookService.verifyByPublisher(id);
         publisherRepository.deleteById(id);
 
+        String createdMessage = "Editora deletada com sucesso!";
+
+        return MessageDTO.builder()
+                .message(createdMessage)
+                .build();
     }
 
     public Publisher verifyAndGetIfExists(Long id) {

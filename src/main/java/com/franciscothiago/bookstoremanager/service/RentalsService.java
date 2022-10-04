@@ -87,12 +87,12 @@ public class RentalsService {
     public MessageDTO updateReturn(Long id) {
         Rentals rentalToCreate = verifyAndGetIfExists(id);
         verifyIfReturnAlreadyExists(rentalToCreate.getReturnDate());
-        verifyQuantityAndSet(rentalToCreate.getReturnDate(), rentalToCreate.getBook());
         rentalToCreate.setReturnDate(LocalDate.now());
+        addBookReturned(rentalToCreate.getReturnDate(), rentalToCreate.getBook());
         rentalToCreate.setStatus(defineEnumTypeValue(rentalToCreate.getReturnDate(), rentalToCreate.getExpirationDate()));
-        Rentals createdRental = rentalsRepository.save(rentalToCreate);
+        rentalsRepository.save(rentalToCreate);
 
-        String createdMessage = String.format("Aluguel com id %d foi retornado com sucesso.", createdRental.getId());
+        String createdMessage = "Aluguel retornado com sucesso.";
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -105,9 +105,9 @@ public class RentalsService {
         rentalToCreate.setExpirationDate(rentalsUpdateDTO.getExpirationDate());
         verifyExpirationDate(rentalToCreate.getExpirationDate(), rentalToCreate.getEntryDate());
         rentalToCreate.setStatus(defineEnumTypeValue(rentalToCreate.getReturnDate(), rentalToCreate.getExpirationDate()));
-        Rentals createdRental = rentalsRepository.save(rentalToCreate);
+        rentalsRepository.save(rentalToCreate);
 
-        String createdMessage = String.format("Aluguel com id %d foi atualizado com sucesso.", createdRental.getId());
+        String createdMessage = "Aluguel atualizado com sucesso.";
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -127,8 +127,19 @@ public class RentalsService {
         }
     }
 
-    public void deleteById(Long id) {
+    public MessageDTO deleteById(Long id) {
+        Status rentalsStatus = verifyAndGetIfExists(id).getStatus();
+        Book book = verifyAndGetIfExists(id).getBook();
+        if(rentalsStatus == Status.WAITING) {
+            bookService.incrementQuantity(book);
+        }
         rentalsRepository.deleteById(id);
+
+        String createdMessage = "Aluguel deletado com sucesso.";
+
+        return MessageDTO.builder()
+                .message(createdMessage)
+                .build();
     }
 
     private void verifyIfExists(Long id) {
@@ -149,9 +160,9 @@ public class RentalsService {
         }
     }
 
-    private void verifyQuantityAndSet(LocalDate returnDate, Book book) {
-        if(returnDate == null) {
-            bookService.decrementQuantity(book);
+    private void addBookReturned(LocalDate returnDate, Book book) {
+        if(returnDate != null) {
+            bookService.incrementQuantity(book);
         }
     }
 
@@ -196,7 +207,6 @@ public class RentalsService {
     public boolean verifyRentalsOfUsers(Long id) {
         User user = userService.verifyAndGetIfExists(id);
         List<Rentals> rentals = rentalsRepository.findByUser(user);
-        System.out.println(rentals);
 
         if(rentals.size() > 0) {
             throw new RentalUpdateIsNotPossibleException("Não é possível excluir este usuário. Exclua os aluguéis associados para poder realizar esta função.");
@@ -205,12 +215,12 @@ public class RentalsService {
         }
     }
 
-    public void deleteByBook(Long id) {
+    public void deleteBookIsPossible(Long id) {
         Book book = bookService.verifyAndGetIfExists(id);
         List<Rentals> rentals = rentalsRepository.findByBook(book);
-        rentals.stream().forEach((rentalList) -> {
-            rentalsRepository.deleteById(rentalList.getId());
-        });
+        if(rentals.size() > 0) {
+            throw new RentalIsNotPossibleException("O livro está associado a algum aluguel.");
+        }
     }
 
 }

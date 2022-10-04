@@ -47,9 +47,7 @@ public class BookController implements BookControllerDocs {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        bookService.deleteById(id);
+    public MessageDTO delete(@PathVariable Long id) {
+        return bookService.deleteById(id);
     }
-
 }

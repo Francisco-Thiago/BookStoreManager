@@ -27,6 +27,7 @@ public class PublisherRequestDTO {
 
     @NotNull
     @NotEmpty
+    @Size(max = 60)
     private String city;
 
 }

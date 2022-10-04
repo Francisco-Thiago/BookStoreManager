@@ -144,15 +144,15 @@ public class BookStoreExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
         List<String> errors = new ArrayList<>();
         exception.getBindingResult().getFieldErrors()
-                .forEach(fieldError -> errors.add("Field "+ fieldError.getField().toUpperCase() + " " + fieldError.getDefaultMessage()));
+                .forEach(fieldError -> errors.add("Propriedade "+ fieldError.getField().toUpperCase() + " " + fieldError.getDefaultMessage()));
         exception.getBindingResult().getGlobalErrors()
                 .forEach(globalErrors -> errors.add("Object "+ globalErrors.getObjectName() + " " + globalErrors.getDefaultMessage()));
-        return buildResponseEntity(HttpStatus.BAD_REQUEST, "Informed argument(s) validation error(s)", errors);
+        return buildResponseEntity(HttpStatus.BAD_REQUEST, "Os argumentos informados não são válidos!", errors);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return buildResponseEntity(HttpStatus.BAD_REQUEST, "Malformed JSON body and/or field error", Collections.singletonList(exception.getLocalizedMessage()));
+        return buildResponseEntity(HttpStatus.BAD_REQUEST, "O corpo do arquivo JSON ou algum propriedade não é válida.", Collections.singletonList(exception.getLocalizedMessage()));
     }
 
     public ResponseEntity<Object> buildResponseEntity(HttpStatus httpStatus, String message, List<String> errors) {

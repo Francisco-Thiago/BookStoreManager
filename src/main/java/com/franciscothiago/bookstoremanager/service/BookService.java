@@ -72,7 +72,7 @@ public class BookService {
         bookToCreate.setPublisher(foundPublisher);
         Book createdBook = bookRepository.save(bookToCreate);
 
-        String createdMessage = String.format("Livro %s com o id %d foi criado com sucesso!",  createdBook.getName(), createdBook.getId());
+        String createdMessage = "Livro criado com sucesso.";
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -95,24 +95,28 @@ public class BookService {
 
         bookToCreate.setPublisher(foundPublisher);
         bookToCreate.setRelease(foundBook.getRelease());
-        bookToCreate.setChangeDate(foundBook.getRelease());
+        bookToCreate.setChangeDate(foundBook.getChangeDate());
         checkForChangesToUpdate(foundBook, bookToCreate);
         bookToCreate.setChangeDate(LocalDate.now());
 
         Book createdBook = bookRepository.save(bookToCreate);
 
-        String createdMessage = String.format("Livro com o id %d foi atualizado com sucesso!", createdBook.getId());
+        String createdMessage = "Livro alterado com sucesso.";
 
         return MessageDTO.builder()
                 .message(createdMessage)
                 .build();
     }
 
-    public void deleteById(Long id) {
-
+    public MessageDTO deleteById(Long id) {
+        rentalsService.deleteBookIsPossible(id);
         bookRepository.deleteById(id);
-        rentalsService.deleteByBook(id);
 
+        String createdMessage = "Livro deletado com sucesso.";
+
+        return MessageDTO.builder()
+                .message(createdMessage)
+                .build();
     }
 
     private void verifyIfExists(String name) {
@@ -154,7 +158,7 @@ public class BookService {
     private void verifyIfExists(Long id, String name, String code) {
         Optional<Book> foundBook = bookRepository.findByIdOrNameOrCode(id, name, code);
         if(foundBook.isPresent()) {
-            throw new BookAlreadyExistsException(id, name, code);
+            throw new BookAlreadyExistsException(name);
         }
     }
 

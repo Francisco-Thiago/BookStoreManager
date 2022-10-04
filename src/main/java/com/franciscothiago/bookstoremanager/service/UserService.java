@@ -61,9 +61,9 @@ public class UserService {
         userToCreate.setUsername(null);
         userToCreate.setPassword(null);
         userToCreate.setRole(Role.USER);
-        User createdUser = userRepository.save(userToCreate);
+        userRepository.save(userToCreate);
 
-        String createdMessage = String.format("Usuário com id %d foi criado.", createdUser.getId());
+        String createdMessage = "Usuário criado com sucesso.";
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -82,9 +82,9 @@ public class UserService {
         User userToCreate = userMapper.toModel(userAdminDTO);
         userToCreate.setRegistrationDate(LocalDate.now());
         userToCreate.setRole(Role.ADMIN);
-        User createdUser = userRepository.save(userToCreate);
+        userRepository.save(userToCreate);
 
-        String createdMessage = String.format("O administrador com id %d foi criado com sucesso.", userAdminDTO.getId());
+        String createdMessage = "O administrador foi criado com sucesso.";
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -94,18 +94,20 @@ public class UserService {
     public MessageDTO updateUser(Long id, UserDTO userDTO) {
         userDTO.setId(id);
         User foundUser = verifyAndGetIfExists(id);
+        verifyRole(foundUser.getRole().getDescription());
         stringPatterns.onlyStringsValidator(userDTO.getName());
 
-        if(!verifyIfEmailIsTheSame(foundUser.getEmail(), userDTO.getEmail())) {
+        if(verifyIfEmailsTheSame(foundUser.getEmail(), userDTO.getEmail())) {
             verifyIfExistsByEmail(userDTO.getEmail());
             foundUser.setEmail(userDTO.getEmail());
         }
 
         userDTO.setEmail(foundUser.getEmail());
         User userToCreate = userMapper.toModel(userDTO);
+        userToCreate.setRole(Role.USER);
         userToCreate.setRegistrationDate(foundUser.getRegistrationDate());
         checkForChangesToUpdate(foundUser, userToCreate);
-        User createdUser = userRepository.save(userToCreate);
+        userRepository.save(userToCreate);
 
         String createdMessage = "O usuário foi alterado com sucesso.";
 
@@ -120,7 +122,7 @@ public class UserService {
         stringPatterns.onlyStringsValidator(userAdminDTO.getUsername());
         userAdminDTO.setId(foundUser.getId());
 
-        if(!verifyIfEmailIsTheSame(foundUser.getEmail(), userAdminDTO.getEmail())) {
+        if(verifyIfEmailsTheSame(foundUser.getEmail(), userAdminDTO.getEmail())) {
             verifyIfExistsByEmail(userAdminDTO.getEmail());
             foundUser.setEmail(userAdminDTO.getEmail());
         }
@@ -139,33 +141,51 @@ public class UserService {
         checkForChangesToUpdate(foundUser, userToCreate);
         User createdUser = userRepository.save(userToCreate);
 
-        String createdMessage = String.format("Administrador alterado com sucesso.");
+        String createdMessage = "Administrador alterado com sucesso.";
 
         return MessageDTO.builder()
                 .message(createdMessage)
                 .build();
     }
 
-    public void deleteUser(Long id){
+    public MessageDTO deleteUser(Long id){
         User user = verifyAndGetIfExists(id);
-        String role = user.getRole().getDescription();
+        verifyRole(user.getRole().getDescription());
         rentalsService.verifyRentalsOfUsers(id);
         userRepository.deleteById(id);
+
+        String createdMessage = "Usuário deletado com sucesso.";
+
+        return MessageDTO.builder()
+                .message(createdMessage)
+                .build();
+    }
+
+    private void verifyRole(String role) {
+        if(role.equals(Role.ADMIN.getDescription())){
+            throw new RoleNotAllowedException("Não é possível deletar ou modificar administradores!");
+        }
     }
 
 
-    public void deleteAdmin(AuthenticatedUser authenticatedUser, Long id) {
+    public MessageDTO deleteAdmin(AuthenticatedUser authenticatedUser, Long id) {
         User currentUser = verifyAndGetIfExistsByUsername(authenticatedUser.getUsername());
         Long idUserFound = verifyAndGetIfExists(id).getId();
         String role = currentUser.getRole().getDescription();
 
-        if(Role.ADMIN.getDescription() == role && id != currentUser.getId()) {
+        if(Role.ADMIN.getDescription().equals(role) && id != currentUser.getId()) {
             userRepository.deleteById(id);
-        } else if(currentUser.getId() == idUserFound){
+        } else if(currentUser.getId().equals(idUserFound)){
             throw new UserInUseException("O usuário está em uso!");
         } else {
             throw new RoleNotAllowedException("Um erro inesperado ocorreu!");
         }
+
+        String createdMessage = "Administrador deletado com sucesso.";
+
+        return MessageDTO.builder()
+                .message(createdMessage)
+                .build();
     }
 
     public User verifyAndGetIfExists(Long id) {
@@ -179,7 +199,7 @@ public class UserService {
     }
 
     private void createDefaultUser() {
-        if(userRepository.findAll().size() == 0) {
+        if(userRepository.findByRole(Role.ADMIN).size() == 0) {
             UserAdminDTO userToCrete = UserAdminDTO.builder()
                     .address("Example")
                     .city("Example")
@@ -187,7 +207,10 @@ public class UserService {
                     .password(passwordEncoder.encode("admin"))
                     .email("admin@gmail.com")
                     .build();
-            User createdUser = userRepository.save(userMapper.toModel(userToCrete));
+            User userModel = userMapper.toModel(userToCrete);
+            userModel.setRegistrationDate(LocalDate.now());
+            userModel.setRole(Role.ADMIN);
+            userRepository.save(userModel);
         }
     }
 
@@ -216,8 +239,8 @@ public class UserService {
         return oldUsername.equals(newUsername);
     }
 
-    private boolean verifyIfEmailIsTheSame(String oldEmail, String newEmail) {
-        return oldEmail.equals(newEmail);
+    private boolean verifyIfEmailsTheSame(String oldEmail, String newEmail) {
+        return !oldEmail.equals(newEmail);
     }
 
     private void verifyIfExists(Long id, String email, String username) {
@@ -231,7 +254,7 @@ public class UserService {
     private void verifyIfExists(Long id, String email) {
         Optional<User> foundUser = userRepository.findByIdOrEmail(id, email);
 
-        if(foundUser.isPresent()) {
+        if(foundUser.isPresent() || email.equals("admin@gmail.com")) {
             throw new UserAlreadyExistsException(id, email);
         }
     }

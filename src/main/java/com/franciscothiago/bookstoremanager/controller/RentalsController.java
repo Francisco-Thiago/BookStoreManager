@@ -43,11 +43,6 @@ public class RentalsController implements RentalsControllerDocs {
        return rentalsService.create(rentalsRequestDTO);
     }
 
-//    @PutMapping("{id}")
-//    public MessageDTO update(@PathVariable Long id, @RequestBody @Valid RentalsUpdateDTO rentalsUpdateDTO) {
-//        return rentalsService.update(id, rentalsUpdateDTO);
-//    }
-
     @PutMapping("/expiration/{id}")
     public MessageDTO updateOnlyExpiration(@PathVariable Long id, @RequestBody @Valid RentalsUpdateDTO rentalsUpdateDTO) {
         return rentalsService.updateExpiration(id, rentalsUpdateDTO);
@@ -59,9 +54,8 @@ public class RentalsController implements RentalsControllerDocs {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        rentalsService.deleteById(id);
+    public MessageDTO delete(@PathVariable Long id) {
+        return rentalsService.deleteById(id);
     }
 
 }

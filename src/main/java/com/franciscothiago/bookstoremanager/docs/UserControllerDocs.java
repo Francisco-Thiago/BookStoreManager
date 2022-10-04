@@ -63,14 +63,14 @@ public interface UserControllerDocs {
             @ApiResponse(code = 200, message = "Success, id deleted"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    void deleteAdmin(AuthenticatedUser authenticatedUser, Long id);
+    MessageDTO deleteAdmin(AuthenticatedUser authenticatedUser, Long id);
 
     @ApiOperation(value = "Delete a user by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success, id deleted"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    void deleteAdmin(Long id);
+    MessageDTO deleteUser(Long id);
 
     @ApiOperation(value = "Token Authentication")
     @ApiResponses(value = {

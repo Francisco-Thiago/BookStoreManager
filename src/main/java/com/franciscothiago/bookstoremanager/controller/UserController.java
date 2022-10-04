@@ -61,15 +61,13 @@ public class UserController implements UserControllerDocs {
     }
 
     @DeleteMapping("/admin/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAdmin(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @PathVariable Long id) {
-        userService.deleteAdmin(authenticatedUser, id);
+    public MessageDTO deleteAdmin(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @PathVariable Long id) {
+        return userService.deleteAdmin(authenticatedUser, id);
     }
 
     @DeleteMapping("/user/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAdmin(@PathVariable Long id) {
-        userService.deleteUser(id);
+    public MessageDTO deleteUser(@PathVariable Long id) {
+        return userService.deleteUser(id);
     }
 
     @PostMapping(value = "/authenticate")

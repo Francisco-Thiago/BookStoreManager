@@ -28,7 +28,7 @@ public class UserAdminDTO {
     @NotNull
     @NotEmpty
     @Email
-    @Size(max = 140)
+    @Size(max = 255)
     private String email;
 
     @NotNull
