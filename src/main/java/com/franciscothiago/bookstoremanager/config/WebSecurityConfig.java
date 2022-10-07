@@ -24,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
 
 
-    private static final String AUTHENTICATE = "/api/v1/users/**";
+    private static final String AUTHENTICATE = "/api/v1/users/authenticate";
     private static final String ALL_USERS_API_URL = "/api/v1/users";
     private static final String USERS_API_URL = "/api/v1/users/user/**";
     private static final String USERS_ADMIN_API_URL = "/api/v1/users/admin/**";
@@ -76,7 +76,7 @@ public class WebSecurityConfig {
                 .antMatchers(AUTHENTICATE).permitAll()
                 .antMatchers(SWAGGER_URL).permitAll()
                 .antMatchers(HttpMethod.GET, ALL_USERS_API_URL).permitAll()
-                .antMatchers(BOOKS_API_URL, PUBLISHERS_API_URL, USERS_API_URL, USERS_API_URL, RENTALS_API_URL).permitAll()
+                .antMatchers(BOOKS_API_URL, PUBLISHERS_API_URL, USERS_API_URL, RENTALS_API_URL).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)

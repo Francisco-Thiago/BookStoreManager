@@ -139,6 +139,7 @@ public class UserService {
         User userToCreate = userMapper.toModel(userAdminDTO);
         userToCreate.setRegistrationDate(foundUser.getRegistrationDate());
         checkForChangesToUpdate(foundUser, userToCreate);
+        userToCreate.setRole(Role.ADMIN);
         User createdUser = userRepository.save(userToCreate);
 
         String createdMessage = "Administrador alterado com sucesso.";
@@ -204,6 +205,7 @@ public class UserService {
                     .address("Example")
                     .city("Example")
                     .name("ADMIN")
+                    .username("ADMIN")
                     .password(passwordEncoder.encode("admin"))
                     .email("admin@gmail.com")
                     .build();
@@ -236,7 +238,11 @@ public class UserService {
         }
     }
     private boolean verifyIfUsernameIsTheSame(String oldUsername, String newUsername) {
-        return oldUsername.equals(newUsername);
+        if(oldUsername == null) {
+            throw new RoleNotAllowedException("Administradores não podem modificar usuários neste endpoint.");
+        }else {
+            return oldUsername.equals(newUsername);
+        }
     }
 
     private boolean verifyIfEmailsTheSame(String oldEmail, String newEmail) {
