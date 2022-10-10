@@ -13,10 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/rentals")
+@CrossOrigin(origins = "*")
 public class RentalsController implements RentalsControllerDocs {
 
     private final RentalsService rentalsService;
@@ -43,15 +43,19 @@ public class RentalsController implements RentalsControllerDocs {
        return rentalsService.create(rentalsRequestDTO);
     }
 
-    @PutMapping("{id}")
-    public MessageDTO update(@PathVariable Long id, @RequestBody @Valid RentalsUpdateDTO rentalsUpdateDTO) {
-        return rentalsService.update(id, rentalsUpdateDTO);
+    @PutMapping("/expiration/{id}")
+    public MessageDTO updateOnlyExpiration(@PathVariable Long id, @RequestBody @Valid RentalsUpdateDTO rentalsUpdateDTO) {
+        return rentalsService.updateExpiration(id, rentalsUpdateDTO);
+    }
+
+    @PutMapping("/return/{id}")
+    public MessageDTO updateOnlyReturn(@PathVariable Long id) {
+        return rentalsService.updateReturn(id);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        rentalsService.deleteById(id);
+    public MessageDTO delete(@PathVariable Long id) {
+        return rentalsService.deleteById(id);
     }
 
 }

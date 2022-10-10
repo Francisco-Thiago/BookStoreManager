@@ -12,10 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/publishers")
+@CrossOrigin(origins = "*")
 public class PublisherController implements PublisherControllerDocs {
 
     private final PublisherService publisherService;
@@ -47,9 +47,8 @@ public class PublisherController implements PublisherControllerDocs {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        publisherService.deleteById(id);
+    public MessageDTO delete(@PathVariable Long id) {
+        return publisherService.deleteById(id);
     }
 
 }

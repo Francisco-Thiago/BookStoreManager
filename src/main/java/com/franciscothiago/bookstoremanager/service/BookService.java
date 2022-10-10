@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -73,7 +72,7 @@ public class BookService {
         bookToCreate.setPublisher(foundPublisher);
         Book createdBook = bookRepository.save(bookToCreate);
 
-        String createdMessage = String.format("Book %s with id %d was created successfully",  createdBook.getName(), createdBook.getId());
+        String createdMessage = "Livro criado com sucesso.";
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -96,24 +95,28 @@ public class BookService {
 
         bookToCreate.setPublisher(foundPublisher);
         bookToCreate.setRelease(foundBook.getRelease());
-        bookToCreate.setChangeDate(foundBook.getRelease());
+        bookToCreate.setChangeDate(foundBook.getChangeDate());
         checkForChangesToUpdate(foundBook, bookToCreate);
         bookToCreate.setChangeDate(LocalDate.now());
 
         Book createdBook = bookRepository.save(bookToCreate);
 
-        String createdMessage = String.format("Book with id %d has been updated successfully", createdBook.getId());
+        String createdMessage = "Livro alterado com sucesso.";
 
         return MessageDTO.builder()
                 .message(createdMessage)
                 .build();
     }
 
-    public void deleteById(Long id) {
-
+    public MessageDTO deleteById(Long id) {
+        rentalsService.deleteBookIsPossible(id);
         bookRepository.deleteById(id);
-        rentalsService.deleteByBook(id);
 
+        String createdMessage = "Livro deletado com sucesso.";
+
+        return MessageDTO.builder()
+                .message(createdMessage)
+                .build();
     }
 
     private void verifyIfExists(String name) {
@@ -142,7 +145,7 @@ public class BookService {
 
     private void checkForChangesToUpdate(Book foundBook, Book newBook) {
         if(foundBook.equals(newBook)) {
-            throw new UpdateHasNoChangesException("Book has no changes");
+            throw new UpdateHasNoChangesException("Livro não possui mudanças.");
         }
     }
 
@@ -155,7 +158,7 @@ public class BookService {
     private void verifyIfExists(Long id, String name, String code) {
         Optional<Book> foundBook = bookRepository.findByIdOrNameOrCode(id, name, code);
         if(foundBook.isPresent()) {
-            throw new BookAlreadyExistsException(id, name, code);
+            throw new BookAlreadyExistsException(name);
         }
     }
 
@@ -163,7 +166,7 @@ public class BookService {
         Publisher publisher = publisherService.verifyAndGetIfExists(id);
         List<Book> books = bookRepository.findByPublisher(publisher);
         if(books.size() > 0) {
-            throw new PublisherIsNotPossibleToUpdateException("Publisher contains books registred. Delete before.");
+            throw new PublisherIsNotPossibleToUpdateException("Editora contém livros registrdos. Por favor, os delete antes.");
         } else {
             return true;
         }

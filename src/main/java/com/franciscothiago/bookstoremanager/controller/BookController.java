@@ -12,10 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/books")
+@CrossOrigin(origins = "*")
 public class BookController implements BookControllerDocs {
 
     private final BookService bookService;
@@ -47,9 +47,7 @@ public class BookController implements BookControllerDocs {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        bookService.deleteById(id);
+    public MessageDTO delete(@PathVariable Long id) {
+        return bookService.deleteById(id);
     }
-
 }

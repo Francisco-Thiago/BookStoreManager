@@ -10,8 +10,6 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 @Api("Publishers management")
 public interface PublisherControllerDocs {
 
@@ -48,5 +46,5 @@ public interface PublisherControllerDocs {
             @ApiResponse(code = 200, message = "Success, id deleted"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    void delete(Long id);
+    MessageDTO delete(Long id);
 }

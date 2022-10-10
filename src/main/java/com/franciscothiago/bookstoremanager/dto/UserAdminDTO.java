@@ -1,9 +1,8 @@
 package com.franciscothiago.bookstoremanager.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -11,7 +10,8 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PublisherRequestDTO {
+@Builder
+public class UserAdminDTO {
 
     private Long id;
 
@@ -22,12 +22,27 @@ public class PublisherRequestDTO {
 
     @NotNull
     @NotEmpty
-    @Size(max = 50)
-    private String code;
+    @Size(max = 255)
+    private String username;
 
     @NotNull
     @NotEmpty
-    @Size(max = 60)
+    @Email
+    @Size(max = 255)
+    private String email;
+
+    @NotNull
+    @NotEmpty
+    @Size(max = 140)
+    private String password;
+
+    @NotNull
+    @NotEmpty
     private String city;
+
+    @NotNull
+    @NotEmpty
+    @Size(max = 140)
+    private String address;
 
 }

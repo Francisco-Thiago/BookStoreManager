@@ -1,6 +1,7 @@
 package com.franciscothiago.bookstoremanager.mapper;
 
-import com.franciscothiago.bookstoremanager.dto.UserRequestDTO;
+import com.franciscothiago.bookstoremanager.dto.UserAdminDTO;
+import com.franciscothiago.bookstoremanager.dto.UserDTO;
 import com.franciscothiago.bookstoremanager.dto.UserResponseDTO;
 import com.franciscothiago.bookstoremanager.model.User;
 import org.mapstruct.Mapper;
@@ -11,7 +12,9 @@ public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    User toModel(UserRequestDTO userRequestDTO);
+    User toModel(UserDTO userDTO);
+
+    User toModel(UserAdminDTO userAdminDTO);
 
     User toModel(UserResponseDTO userResponseDTO);
 
