@@ -71,7 +71,6 @@ public class UserService {
     }
 
     public MessageDTO createAdmin(UserAdminDTO userAdminDTO) {
-
         userAdminDTO.setName(userAdminDTO.getName().toUpperCase());
         userAdminDTO.setUsername(userAdminDTO.getUsername().toUpperCase());
         stringPatterns.onlyStringsValidator(userAdminDTO.getName());
@@ -134,12 +133,13 @@ public class UserService {
 
         userAdminDTO.setEmail(foundUser.getEmail());
         userAdminDTO.setUsername(foundUser.getUsername());
-        userAdminDTO.setPassword(passwordEncoder.encode(userAdminDTO.getPassword()));
+        foundUser.setPassword(authenticatedUser.getPassword());
 
         User userToCreate = userMapper.toModel(userAdminDTO);
         userToCreate.setRegistrationDate(foundUser.getRegistrationDate());
-        checkForChangesToUpdate(foundUser, userToCreate);
         userToCreate.setRole(Role.ADMIN);
+        checkForChangesToUpdate(foundUser, userToCreate);
+        userAdminDTO.setPassword(passwordEncoder.encode(userAdminDTO.getPassword()));
         User createdUser = userRepository.save(userToCreate);
 
         String createdMessage = "Administrador alterado com sucesso.";
