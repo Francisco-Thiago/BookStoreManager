@@ -149,12 +149,6 @@ public class UserService {
                 .build();
     }
 
-    private void verifyIfIsTheSame(User userAdminDTO, User foundUser) {
-        if(userAdminDTO.equals(foundUser)) {
-            throw new UpdateHasNoChangesException("Não há mudanças perceptíveis.");
-        }
-    }
-
     public MessageDTO deleteUser(Long id){
         User user = verifyAndGetIfExists(id);
         verifyRole(user.getRole().getDescription());
