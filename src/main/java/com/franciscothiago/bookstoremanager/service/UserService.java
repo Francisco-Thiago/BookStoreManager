@@ -1,9 +1,6 @@
 package com.franciscothiago.bookstoremanager.service;
 
-import com.franciscothiago.bookstoremanager.dto.AuthenticatedUser;
-import com.franciscothiago.bookstoremanager.dto.MessageDTO;
-import com.franciscothiago.bookstoremanager.dto.UserRequestDTO;
-import com.franciscothiago.bookstoremanager.dto.UserResponseDTO;
+import com.franciscothiago.bookstoremanager.dto.*;
 import com.franciscothiago.bookstoremanager.enums.Role;
 import com.franciscothiago.bookstoremanager.exception.*;
 import com.franciscothiago.bookstoremanager.mapper.UserMapper;
@@ -43,6 +40,7 @@ public class UserService {
     }
 
     public Page<UserResponseDTO> findAll(Pageable pageable) {
+        createDefaultUser();
         return userRepository.findAll(pageable)
                 .map(userMapper::toDTO);
     }
@@ -53,81 +51,169 @@ public class UserService {
                 .orElseThrow(() -> new BookNotFoundException(id));
     }
 
-    public MessageDTO create(UserRequestDTO userToCreateDTO) {
+    public MessageDTO createUser(UserDTO userDTO) {
+        userDTO.setName(userDTO.getName().toUpperCase());
+        stringPatterns.onlyStringsValidator(userDTO.getName());
 
-        userToCreateDTO.setUsername(userToCreateDTO.getUsername().toUpperCase());
-        stringPatterns.onlyStringsValidator(userToCreateDTO.getUsername());
-        userToCreateDTO.setPassword(passwordEncoder.encode(userToCreateDTO.getPassword()));
-
-        verifyIfExists(userToCreateDTO.getId(), userToCreateDTO.getEmail(), userToCreateDTO.getUsername());
-        User userToCreate = userMapper.toModel(userToCreateDTO);
+        verifyIfExists(userDTO.getId(), userDTO.getEmail());
+        User userToCreate = userMapper.toModel(userDTO);
         userToCreate.setRegistrationDate(LocalDate.now());
-        User createdUser = userRepository.save(userToCreate);
+        userToCreate.setUsername(null);
+        userToCreate.setPassword(null);
+        userToCreate.setRole(Role.USER);
+        userRepository.save(userToCreate);
 
-        String createdMessage = String.format("User %s with id %s successfully created", createdUser.getUsername(), createdUser.getId());
+        String createdMessage = "Usuário criado com sucesso.";
 
         return MessageDTO.builder()
                 .message(createdMessage)
                 .build();
-
     }
 
-    public MessageDTO update(AuthenticatedUser authenticatedUser, Long id, UserRequestDTO userRequestDTO) {
+    public MessageDTO createAdmin(UserAdminDTO userAdminDTO) {
+
+        userAdminDTO.setName(userAdminDTO.getName().toUpperCase());
+        userAdminDTO.setUsername(userAdminDTO.getUsername().toUpperCase());
+        stringPatterns.onlyStringsValidator(userAdminDTO.getName());
+        stringPatterns.onlyStringsValidator(userAdminDTO.getUsername());
+        userAdminDTO.setPassword(passwordEncoder.encode(userAdminDTO.getPassword()));
+
+        verifyIfExists(userAdminDTO.getId(), userAdminDTO.getEmail(), userAdminDTO.getUsername());
+        User userToCreate = userMapper.toModel(userAdminDTO);
+        userToCreate.setRegistrationDate(LocalDate.now());
+        userToCreate.setRole(Role.ADMIN);
+        userRepository.save(userToCreate);
+
+        String createdMessage = "O administrador foi criado com sucesso.";
+
+        return MessageDTO.builder()
+                .message(createdMessage)
+                .build();
+    }
+
+    public MessageDTO updateUser(Long id, UserDTO userDTO) {
+        userDTO.setId(id);
         User foundUser = verifyAndGetIfExists(id);
-        userRequestDTO.setUsername(userRequestDTO.getUsername().toUpperCase());
-        stringPatterns.onlyStringsValidator(userRequestDTO.getUsername());
-        userRequestDTO.setId(foundUser.getId());
+        verifyRole(foundUser.getRole().getDescription());
+        stringPatterns.onlyStringsValidator(userDTO.getName());
 
-        if(!verifyIfEmailIsTheSame(foundUser.getEmail(), userRequestDTO.getEmail())) {
-            verifyIfExistsByEmail(userRequestDTO.getEmail());
-            foundUser.setEmail(userRequestDTO.getEmail());
+        if(verifyIfEmailsTheSame(foundUser.getEmail(), userDTO.getEmail())) {
+            verifyIfExistsByEmail(userDTO.getEmail());
+            foundUser.setEmail(userDTO.getEmail());
         }
 
-        if(!verifyIfUsernameIsTheSame(foundUser.getUsername(), userRequestDTO.getUsername())) {
-            verifyIfExistsByUsername(userRequestDTO.getUsername());
-            foundUser.setUsername(userRequestDTO.getUsername());
-        }
-
-        userRequestDTO.setEmail(foundUser.getEmail());
-        userRequestDTO.setUsername(foundUser.getUsername());
-        userRequestDTO.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
-
-        User userToCreate = userMapper.toModel(userRequestDTO);
+        userDTO.setEmail(foundUser.getEmail());
+        User userToCreate = userMapper.toModel(userDTO);
+        userToCreate.setRole(Role.USER);
         userToCreate.setRegistrationDate(foundUser.getRegistrationDate());
         checkForChangesToUpdate(foundUser, userToCreate);
-        User createdUser = userRepository.save(userToCreate);
+        userRepository.save(userToCreate);
 
-        String createdMessage = String.format("User with id %d has been updated successfully", createdUser.getId());
+        String createdMessage = "O usuário foi alterado com sucesso.";
 
         return MessageDTO.builder()
                 .message(createdMessage)
                 .build();
     }
 
-    public void deleteById(AuthenticatedUser authenticatedUser, Long id) {
+    public MessageDTO updateAdmin(AuthenticatedUser authenticatedUser, Long id, UserAdminDTO userAdminDTO) {
+        User foundUser = verifyAndGetIfExists(id);
+        userAdminDTO.setUsername(userAdminDTO.getUsername().toUpperCase());
+        stringPatterns.onlyStringsValidator(userAdminDTO.getUsername());
+        userAdminDTO.setId(foundUser.getId());
+
+        if(verifyIfEmailsTheSame(foundUser.getEmail(), userAdminDTO.getEmail())) {
+            verifyIfExistsByEmail(userAdminDTO.getEmail());
+            foundUser.setEmail(userAdminDTO.getEmail());
+        }
+
+        if(!verifyIfUsernameIsTheSame(foundUser.getUsername(), userAdminDTO.getUsername())) {
+            verifyIfExistsByUsername(userAdminDTO.getUsername());
+            foundUser.setUsername(userAdminDTO.getUsername());
+        }
+
+        userAdminDTO.setEmail(foundUser.getEmail());
+        userAdminDTO.setUsername(foundUser.getUsername());
+        userAdminDTO.setPassword(passwordEncoder.encode(userAdminDTO.getPassword()));
+
+        User userToCreate = userMapper.toModel(userAdminDTO);
+        userToCreate.setRegistrationDate(foundUser.getRegistrationDate());
+        checkForChangesToUpdate(foundUser, userToCreate);
+        userToCreate.setRole(Role.ADMIN);
+        User createdUser = userRepository.save(userToCreate);
+
+        String createdMessage = "Administrador alterado com sucesso.";
+
+        return MessageDTO.builder()
+                .message(createdMessage)
+                .build();
+    }
+
+    public MessageDTO deleteUser(Long id){
+        User user = verifyAndGetIfExists(id);
+        verifyRole(user.getRole().getDescription());
+        rentalsService.verifyRentalsOfUsers(id);
+        userRepository.deleteById(id);
+
+        String createdMessage = "Usuário deletado com sucesso.";
+
+        return MessageDTO.builder()
+                .message(createdMessage)
+                .build();
+    }
+
+    private void verifyRole(String role) {
+        if(role.equals(Role.ADMIN.getDescription())){
+            throw new RoleNotAllowedException("Não é possível deletar ou modificar administradores!");
+        }
+    }
+
+
+    public MessageDTO deleteAdmin(AuthenticatedUser authenticatedUser, Long id) {
         User currentUser = verifyAndGetIfExistsByUsername(authenticatedUser.getUsername());
         Long idUserFound = verifyAndGetIfExists(id).getId();
         String role = currentUser.getRole().getDescription();
-        rentalsService.verifyRentalsOfUsers(idUserFound);
 
-        if(Role.ADMIN.getDescription() == role && id != currentUser.getId()) {
+        if(Role.ADMIN.getDescription().equals(role) && id != currentUser.getId()) {
             userRepository.deleteById(id);
-        } else if(currentUser.getId() == idUserFound){
-            throw new UserInUseException("User id is the same!");
+        } else if(currentUser.getId().equals(idUserFound)){
+            throw new UserInUseException("O usuário está em uso!");
         } else {
-            throw new RoleNotAllowedException("Role USER cannot delete users, only admins!");
+            throw new RoleNotAllowedException("Um erro inesperado ocorreu!");
         }
 
+        String createdMessage = "Administrador deletado com sucesso.";
+
+        return MessageDTO.builder()
+                .message(createdMessage)
+                .build();
     }
 
     public User verifyAndGetIfExists(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new InvalidStringException("User with id "+id+" is invalid."));
+                .orElseThrow(() -> new InvalidStringException(String.format("Usuário com id %d é inválido.", id)));
     }
 
     public User verifyAndGetIfExistsByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserAlreadyExistsException(username));
+    }
+
+    private void createDefaultUser() {
+        if(userRepository.findByRole(Role.ADMIN).size() == 0) {
+            UserAdminDTO userToCrete = UserAdminDTO.builder()
+                    .address("Example")
+                    .city("Example")
+                    .name("ADMIN")
+                    .username("ADMIN")
+                    .password(passwordEncoder.encode("admin"))
+                    .email("admin@gmail.com")
+                    .build();
+            User userModel = userMapper.toModel(userToCrete);
+            userModel.setRegistrationDate(LocalDate.now());
+            userModel.setRole(Role.ADMIN);
+            userRepository.save(userModel);
+        }
     }
 
     private void verifyIfExistsByEmail(String email) {
@@ -148,15 +234,19 @@ public class UserService {
 
     private void checkForChangesToUpdate(User foundUser, User newUser) {
         if(foundUser.equals(newUser)) {
-            throw new UpdateHasNoChangesException("User has no changes");
+            throw new UpdateHasNoChangesException("Usuário não possui mudanças.");
         }
     }
     private boolean verifyIfUsernameIsTheSame(String oldUsername, String newUsername) {
-        return oldUsername.equals(newUsername);
+        if(oldUsername == null) {
+            throw new RoleNotAllowedException("Administradores não podem modificar usuários neste endpoint.");
+        }else {
+            return oldUsername.equals(newUsername);
+        }
     }
 
-    private boolean verifyIfEmailIsTheSame(String oldEmail, String newEmail) {
-        return oldEmail.equals(newEmail);
+    private boolean verifyIfEmailsTheSame(String oldEmail, String newEmail) {
+        return !oldEmail.equals(newEmail);
     }
 
     private void verifyIfExists(Long id, String email, String username) {
@@ -164,6 +254,14 @@ public class UserService {
 
         if(foundUser.isPresent()) {
             throw new UserAlreadyExistsException(id, email, username);
+        }
+    }
+
+    private void verifyIfExists(Long id, String email) {
+        Optional<User> foundUser = userRepository.findByIdOrEmail(id, email);
+
+        if(foundUser.isPresent() || email.equals("admin@gmail.com")) {
+            throw new UserAlreadyExistsException(id, email);
         }
     }
 

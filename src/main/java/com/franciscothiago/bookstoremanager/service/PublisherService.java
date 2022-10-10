@@ -50,12 +50,11 @@ public class PublisherService {
 
     public MessageDTO create(PublisherRequestDTO publisherRequestDTO) {
         verifyIfExists(publisherRequestDTO.getName(), publisherRequestDTO.getCode());
-
         Publisher publisherToCreate = publisherMapper.toModel(publisherRequestDTO);
         publisherToCreate.setRegistrationDate(LocalDate.now());
-        Publisher createdPublisher = publisherRepository.save(publisherToCreate);
+        publisherRepository.save(publisherToCreate);
 
-        String createdMessage = String.format("Publisher %s with id %s successfully created", createdPublisher.getName(), createdPublisher.getId());
+        String createdMessage = "Editora criada com sucesso!";
 
         return MessageDTO.builder()
                 .message(createdMessage)
@@ -70,18 +69,22 @@ public class PublisherService {
         checkForChangesToUpdate(foundPublisher, publisherToCreate);
         Publisher createdPublisher = publisherRepository.save(publisherToCreate);
 
-        String createdMessage = String.format("Publisher with id %d has been updated successfully", createdPublisher.getId());
+        String createdMessage = "Editora atualizada com sucesso!";
 
         return MessageDTO.builder()
                 .message(createdMessage)
                 .build();
     }
 
-    public void deleteById(Long id) {
-
+    public MessageDTO deleteById(Long id) {
         bookService.verifyByPublisher(id);
         publisherRepository.deleteById(id);
 
+        String createdMessage = "Editora deletada com sucesso!";
+
+        return MessageDTO.builder()
+                .message(createdMessage)
+                .build();
     }
 
     public Publisher verifyAndGetIfExists(Long id) {
@@ -98,7 +101,7 @@ public class PublisherService {
 
     private void checkForChangesToUpdate(Publisher foundPublisher, Publisher publisherToCreate) {
         if(foundPublisher.equals(publisherToCreate)) {
-            throw new UpdateHasNoChangesException("Publisher has no changes.");
+            throw new UpdateHasNoChangesException("Editora não possui mudanças.");
         }
     }
 

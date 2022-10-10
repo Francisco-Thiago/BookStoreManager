@@ -1,6 +1,7 @@
 package com.franciscothiago.bookstoremanager.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,14 +13,14 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRequestDTO {
+public class UserDTO {
 
     private Long id;
 
     @NotNull
     @NotEmpty
     @Size(max = 255)
-    private String username;
+    private String name;
 
     @NotNull
     @NotEmpty
@@ -29,20 +30,11 @@ public class UserRequestDTO {
 
     @NotNull
     @NotEmpty
-    @Size(max = 140)
-    private String password;
-
-    @NotNull
-    @NotEmpty
     private String city;
 
     @NotNull
     @NotEmpty
     @Size(max = 140)
     private String address;
-
-    @NotNull
-    @Size(max = 20)
-    private String role;
 
 }

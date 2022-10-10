@@ -20,7 +20,7 @@ public class StringPatterns {
         separatedValue[separatedValue.length-1] = separatedValue[separatedValue.length-1].replaceAll(",", "").replaceAll(";", "");
 
         if(join(separatedValue).trim().equals("")) {
-            throw new InvalidStringException("Invalid String. Please avoid empty spaces or special characters");
+            throw new InvalidStringException("Por favor, evite campos vazios ou caracteres especiais.");
         }
         return join(separatedValue);
     }
@@ -29,7 +29,7 @@ public class StringPatterns {
         Pattern special = Pattern.compile("[0-9]");
         Matcher matchSpecial = special.matcher(value);
         if(matchSpecial.find()) {
-            throw new InvalidStringException("Please don't put numbers.");
+            throw new InvalidStringException("Números ou caracteres especiais não são permitidos!");
         }
     }
 

@@ -7,6 +7,11 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Api("User management")
 public interface UserControllerDocs {
@@ -26,25 +31,46 @@ public interface UserControllerDocs {
     UserResponseDTO getById(Long id);
 
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success, message realized"),
+            @ApiResponse(code = 200, message = "User created."),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
     @ApiOperation(value = "Create a new message")
-    MessageDTO create(UserRequestDTO userToCreateDTO);
+    MessageDTO createUser(UserDTO userDTO);
+
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Admin created"),
+            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
+    })
+    @ApiOperation(value = "Create a new message")
+    MessageDTO createAdmin(UserAdminDTO userAdminDTO);
 
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User updated"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
     @ApiOperation(value = "Update a user")
-    MessageDTO update(AuthenticatedUser authenticatedUser, Long id, UserRequestDTO userRequestDTO);
+    MessageDTO updateUser(Long id, UserDTO userDTO);
+
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Admin updated"),
+            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
+    })
+    @ApiOperation(value = "Update a user")
+    MessageDTO updateAdmin(AuthenticatedUser authenticatedUser, Long id, UserAdminDTO userAdminDTO);
+
+    @ApiOperation(value = "Delete a admin by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success, id deleted"),
+            @ApiResponse(code = 400, message = "Missing data. Check and try again.")
+    })
+    MessageDTO deleteAdmin(AuthenticatedUser authenticatedUser, Long id);
 
     @ApiOperation(value = "Delete a user by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success, id deleted"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    void delete(AuthenticatedUser authenticatedUser, Long id);
+    MessageDTO deleteUser(Long id);
 
     @ApiOperation(value = "Token Authentication")
     @ApiResponses(value = {
@@ -54,3 +80,5 @@ public interface UserControllerDocs {
     JwtResponse createAuthenticationToken(JwtRequest jwtRequest);
 
 }
+
+

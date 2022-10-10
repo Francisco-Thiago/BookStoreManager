@@ -22,13 +22,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
-    private static final String USERS_API_URL = "/api/v1/users/**";
+
+
+    private static final String AUTHENTICATE = "/api/v1/users/authenticate";
+    private static final String ALL_USERS_API_URL = "/api/v1/users";
+    private static final String USERS_API_URL = "/api/v1/users/user/**";
+    private static final String USERS_ADMIN_API_URL = "/api/v1/users/admin/**";
     private static final String PUBLISHERS_API_URL = "/api/v1/publishers/**";
     private static final String RENTALS_API_URL = "/api/v1/rentals/**";
     private static final String BOOKS_API_URL = "/api/v1/books/**";
     private static final String SWAGGER_URL = "/swagger-ui.html";
     private static final String ROLE_ADMIN = Role.ADMIN.getDescription();
-    private static final String ROLE_USER = Role.USER.getDescription();
     private static final String[] SWAGGER_RESOURCES = {
             "/v2/api-docs",
             "/swagger-resources",
@@ -38,6 +42,7 @@ public class WebSecurityConfig {
             "/swagger-ui.html",
             "/webjars/**"
     };
+
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private UserDetailsService userDetailsService;
     private PasswordEncoder passwordEncoder;
@@ -67,12 +72,11 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().and()
                 .csrf().disable()
-                .authorizeHttpRequests().antMatchers(SWAGGER_URL).permitAll()
-                .antMatchers(HttpMethod.POST, USERS_API_URL).permitAll()
-                .antMatchers(HttpMethod.GET, PUBLISHERS_API_URL).permitAll()
-                .antMatchers(HttpMethod.GET, BOOKS_API_URL).permitAll()
-                .antMatchers(RENTALS_API_URL).hasAnyRole(ROLE_ADMIN)
-                .antMatchers(USERS_API_URL, PUBLISHERS_API_URL, BOOKS_API_URL).hasAnyRole(ROLE_ADMIN, ROLE_USER)
+                .authorizeHttpRequests()
+                .antMatchers(AUTHENTICATE).permitAll()
+                .antMatchers(SWAGGER_URL).permitAll()
+                .antMatchers(HttpMethod.GET, ALL_USERS_API_URL).permitAll()
+                .antMatchers(BOOKS_API_URL, PUBLISHERS_API_URL, USERS_API_URL, RENTALS_API_URL).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
@@ -88,4 +92,5 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() throws Exception {
         return (web) -> web.ignoring().antMatchers(SWAGGER_RESOURCES);
     }
+
 }

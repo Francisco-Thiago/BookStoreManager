@@ -46,6 +46,6 @@ public interface BookControllerDocs {
             @ApiResponse(code = 200, message = "Success, id deleted"),
             @ApiResponse(code = 400, message = "Missing data. Check and try again.")
     })
-    void delete(Long id);
+    MessageDTO delete(Long id);
 
 }

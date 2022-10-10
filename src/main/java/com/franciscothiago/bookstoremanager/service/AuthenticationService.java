@@ -49,7 +49,7 @@ public class AuthenticationService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User not found with username %s", username)));
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("Os dados do usuário atual foram modificados. Faça login com as novas informações.", username)));
         return new AuthenticatedUser(
                 user.getUsername(),
                 user.getPassword(),

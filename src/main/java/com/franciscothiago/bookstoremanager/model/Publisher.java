@@ -19,7 +19,7 @@ public class Publisher{
     @Column(nullable = false, unique = true, length = 100)
     private String code;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 60)
     private String city;
 
     @Column(nullable = false)
