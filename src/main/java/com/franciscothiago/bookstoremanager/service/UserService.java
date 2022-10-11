@@ -142,10 +142,8 @@ public class UserService {
         userToCreate.setRegistrationDate(foundUser.getRegistrationDate());
         userToCreate.setRole(Role.ADMIN);
         checkForChangesToUpdate(foundUser, userToCreate);
-        System.out.println(foundUser.toString());
-        System.out.println(userToCreate.toString());
         userAdminDTO.setPassword(passwordEncoder.encode(userAdminDTO.getPassword()));
-        User createdUser = userRepository.save(userToCreate);
+        userRepository.save(userToCreate);
 
         String createdMessage = "Administrador alterado com sucesso.";
 
