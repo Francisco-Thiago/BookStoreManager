@@ -117,6 +117,9 @@ public class UserService {
 
     public MessageDTO updateAdmin(AuthenticatedUser authenticatedUser, Long id, UserAdminDTO userAdminDTO) {
         User foundUser = verifyAndGetIfExists(id);
+        if(authenticatedUser.getUsername().equals(userAdminDTO.getUsername())) {
+            throw new UserInUseException("Usuário está sendo utilizado.");
+        }
         userAdminDTO.setUsername(userAdminDTO.getUsername().toUpperCase());
         stringPatterns.onlyStringsValidator(userAdminDTO.getUsername());
         userAdminDTO.setId(foundUser.getId());
@@ -140,7 +143,7 @@ public class UserService {
         userToCreate.setRole(Role.ADMIN);
         checkForChangesToUpdate(foundUser, userToCreate);
         userAdminDTO.setPassword(passwordEncoder.encode(userAdminDTO.getPassword()));
-        User createdUser = userRepository.save(userToCreate);
+        userRepository.save(userToCreate);
 
         String createdMessage = "Administrador alterado com sucesso.";
 
