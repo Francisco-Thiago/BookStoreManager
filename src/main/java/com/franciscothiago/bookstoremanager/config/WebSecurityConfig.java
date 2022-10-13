@@ -25,9 +25,8 @@ public class WebSecurityConfig {
 
 
     private static final String AUTHENTICATE = "/api/v1/users/authenticate";
-    private static final String ALL_USERS_API_URL = "/api/v1/users";
     private static final String USERS_API_URL = "/api/v1/users/user/**";
-    private static final String USERS_ADMIN_API_URL = "/api/v1/users/admin/**";
+    private static final String USERS_ADMIN_API_URL = "/api/v1/users/admin";
     private static final String PUBLISHERS_API_URL = "/api/v1/publishers/**";
     private static final String RENTALS_API_URL = "/api/v1/rentals/**";
     private static final String BOOKS_API_URL = "/api/v1/books/**";
@@ -73,10 +72,8 @@ public class WebSecurityConfig {
         httpSecurity.cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .antMatchers(AUTHENTICATE).permitAll()
-                .antMatchers(SWAGGER_URL).permitAll()
-                .antMatchers(HttpMethod.GET, ALL_USERS_API_URL).permitAll()
-                .antMatchers(BOOKS_API_URL, PUBLISHERS_API_URL, USERS_API_URL, RENTALS_API_URL).permitAll()
+                .antMatchers(AUTHENTICATE, SWAGGER_URL, USERS_ADMIN_API_URL).permitAll()
+                .antMatchers(BOOKS_API_URL, PUBLISHERS_API_URL, USERS_API_URL, RENTALS_API_URL).hasRole(ROLE_ADMIN)
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)

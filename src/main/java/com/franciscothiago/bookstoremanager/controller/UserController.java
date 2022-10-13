@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -44,25 +44,14 @@ public class UserController implements UserControllerDocs {
         return userService.createUser(userDTO);
     }
 
-    @PostMapping("/admin")
-    @ResponseStatus(HttpStatus.CREATED)
-    public MessageDTO createAdmin(@RequestBody @Valid UserAdminDTO userAdminDTO) {
-        return userService.createAdmin(userAdminDTO);
-    }
-
     @PutMapping("/user/{id}")
     public MessageDTO updateUser(@PathVariable Long id, @RequestBody @Valid UserDTO userDTO) {
         return userService.updateUser(id, userDTO);
     }
 
-    @PutMapping("/admin/{id}")
-    public MessageDTO updateAdmin(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @PathVariable Long id, @RequestBody @Valid UserAdminDTO userAdminDTO) {
-        return userService.updateAdmin(authenticatedUser, id, userAdminDTO);
-    }
-
-    @DeleteMapping("/admin/{id}")
-    public MessageDTO deleteAdmin(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @PathVariable Long id) {
-        return userService.deleteAdmin(authenticatedUser, id);
+    @PutMapping("/admin")
+    public MessageDTO updateAdmin(@RequestBody @Valid AdminUpdateDTO adminUpdateDTO) {
+        return userService.updateAdmin(adminUpdateDTO);
     }
 
     @DeleteMapping("/user/{id}")
