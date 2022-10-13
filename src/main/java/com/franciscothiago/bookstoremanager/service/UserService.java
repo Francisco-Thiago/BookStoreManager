@@ -70,26 +70,6 @@ public class UserService {
                 .build();
     }
 
-    public MessageDTO createAdmin(UserAdminDTO userAdminDTO) {
-        userAdminDTO.setName(userAdminDTO.getName().toUpperCase());
-        userAdminDTO.setUsername(userAdminDTO.getUsername().toUpperCase());
-        stringPatterns.onlyStringsValidator(userAdminDTO.getName());
-        stringPatterns.onlyStringsValidator(userAdminDTO.getUsername());
-        userAdminDTO.setPassword(passwordEncoder.encode(userAdminDTO.getPassword()));
-
-        verifyIfExists(userAdminDTO.getId(), userAdminDTO.getEmail(), userAdminDTO.getUsername());
-        User userToCreate = userMapper.toModel(userAdminDTO);
-        userToCreate.setRegistrationDate(LocalDate.now());
-        userToCreate.setRole(Role.ADMIN);
-        userRepository.save(userToCreate);
-
-        String createdMessage = "O administrador foi criado com sucesso.";
-
-        return MessageDTO.builder()
-                .message(createdMessage)
-                .build();
-    }
-
     public MessageDTO updateUser(Long id, UserDTO userDTO) {
         userDTO.setId(id);
         User foundUser = verifyAndGetIfExists(id);
@@ -115,40 +95,14 @@ public class UserService {
                 .build();
     }
 
-    public MessageDTO updateAdmin(AuthenticatedUser authenticatedUser, Long id, UserAdminDTO userAdminDTO) {
-        User foundUser = verifyAndGetIfExists(id);
-        if(authenticatedUser.getUsername().equals(userAdminDTO.getUsername())) {
-            throw new UserInUseException("Usuário está sendo utilizado.");
-        }
-        userAdminDTO.setUsername(userAdminDTO.getUsername().toUpperCase());
-        stringPatterns.onlyStringsValidator(userAdminDTO.getUsername());
-        userAdminDTO.setId(foundUser.getId());
-
-        if(verifyIfEmailsTheSame(foundUser.getEmail(), userAdminDTO.getEmail())) {
-            verifyIfExistsByEmail(userAdminDTO.getEmail());
-            foundUser.setEmail(userAdminDTO.getEmail());
-        }
-
-        if(!verifyIfUsernameIsTheSame(foundUser.getUsername(), userAdminDTO.getUsername())) {
-            verifyIfExistsByUsername(userAdminDTO.getUsername());
-            foundUser.setUsername(userAdminDTO.getUsername());
-        }
-
-        userAdminDTO.setEmail(foundUser.getEmail());
-        userAdminDTO.setUsername(foundUser.getUsername());
-        foundUser.setPassword(authenticatedUser.getPassword());
-
-        User userToCreate = userMapper.toModel(userAdminDTO);
-        userToCreate.setRegistrationDate(foundUser.getRegistrationDate());
-        userToCreate.setRole(Role.ADMIN);
-        checkForChangesToUpdate(foundUser, userToCreate);
-        userAdminDTO.setPassword(passwordEncoder.encode(userAdminDTO.getPassword()));
-        userRepository.save(userToCreate);
-
-        String createdMessage = "Administrador alterado com sucesso.";
+    public MessageDTO updateAdmin(AdminUpdateDTO adminDTO) {
+        createDefaultUser();
+        User foundUser = verifyAndGetIfExists(1L);
+        foundUser.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
+        userRepository.save(foundUser);
 
         return MessageDTO.builder()
-                .message(createdMessage)
+                .message("Anote sua nova senha em um lugar seguro.")
                 .build();
     }
 
@@ -171,27 +125,6 @@ public class UserService {
         }
     }
 
-
-    public MessageDTO deleteAdmin(AuthenticatedUser authenticatedUser, Long id) {
-        User currentUser = verifyAndGetIfExistsByUsername(authenticatedUser.getUsername());
-        Long idUserFound = verifyAndGetIfExists(id).getId();
-        String role = currentUser.getRole().getDescription();
-
-        if(Role.ADMIN.getDescription().equals(role) && id != currentUser.getId()) {
-            userRepository.deleteById(id);
-        } else if(currentUser.getId().equals(idUserFound)){
-            throw new UserInUseException("O usuário está em uso!");
-        } else {
-            throw new RoleNotAllowedException("Um erro inesperado ocorreu!");
-        }
-
-        String createdMessage = "Administrador deletado com sucesso.";
-
-        return MessageDTO.builder()
-                .message(createdMessage)
-                .build();
-    }
-
     public User verifyAndGetIfExists(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new InvalidStringException(String.format("Usuário com id %d é inválido.", id)));
@@ -204,9 +137,9 @@ public class UserService {
 
     private void createDefaultUser() {
         if(userRepository.findByRole(Role.ADMIN).size() == 0) {
-            UserAdminDTO userToCrete = UserAdminDTO.builder()
-                    .address("Example")
-                    .city("Example")
+            AdminDTO userToCrete = AdminDTO.builder()
+                    .address("Desconhecido")
+                    .city("Desconhecido")
                     .name("ADMIN")
                     .username("ADMIN")
                     .password(passwordEncoder.encode("admin"))

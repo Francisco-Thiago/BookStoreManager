@@ -1,6 +1,6 @@
 package com.franciscothiago.bookstoremanager.mapper;
 
-import com.franciscothiago.bookstoremanager.dto.UserAdminDTO;
+import com.franciscothiago.bookstoremanager.dto.AdminDTO;
 import com.franciscothiago.bookstoremanager.dto.UserDTO;
 import com.franciscothiago.bookstoremanager.dto.UserResponseDTO;
 import com.franciscothiago.bookstoremanager.model.User;
@@ -14,7 +14,7 @@ public interface UserMapper {
 
     User toModel(UserDTO userDTO);
 
-    User toModel(UserAdminDTO userAdminDTO);
+    User toModel(AdminDTO adminDTO);
 
     User toModel(UserResponseDTO userResponseDTO);
 
