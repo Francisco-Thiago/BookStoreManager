@@ -11,7 +11,6 @@ import com.franciscothiago.bookstoremanager.mapper.BookMapper;
 import com.franciscothiago.bookstoremanager.model.Book;
 import com.franciscothiago.bookstoremanager.model.Publisher;
 import com.franciscothiago.bookstoremanager.repository.BookRepository;
-import com.franciscothiago.bookstoremanager.repository.RentalsRepository;
 import com.franciscothiago.bookstoremanager.utils.StringPatterns;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -28,22 +27,19 @@ public class BookService {
 
     public static final BookMapper bookMapper = BookMapper.INSTANCE;
 
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
-    private PublisherService publisherService;
+    private final PublisherService publisherService;
 
-    private RentalsRepository rentalsRepository;
+    private final StringPatterns stringPatterns;
 
-    private StringPatterns stringPatterns;
-
-    private RentalsService rentalsService;
+    private final RentalsService rentalsService;
 
     @Autowired
     @Lazy
-    public BookService(BookRepository bookRepository, PublisherService publisherService, RentalsRepository rentalsRepository, StringPatterns stringPatterns, RentalsService rentalsService) {
+    public BookService(BookRepository bookRepository, PublisherService publisherService, StringPatterns stringPatterns, RentalsService rentalsService) {
         this.bookRepository = bookRepository;
         this.publisherService = publisherService;
-        this.rentalsRepository = rentalsRepository;
         this.stringPatterns = stringPatterns;
         this.rentalsService = rentalsService;
     }
@@ -70,7 +66,7 @@ public class BookService {
         bookToCreate.setRelease(LocalDate.now());
         bookToCreate.setChangeDate(LocalDate.now());
         bookToCreate.setPublisher(foundPublisher);
-        Book createdBook = bookRepository.save(bookToCreate);
+        bookRepository.save(bookToCreate);
 
         String createdMessage = "Livro criado com sucesso.";
 
@@ -99,7 +95,7 @@ public class BookService {
         checkForChangesToUpdate(foundBook, bookToCreate);
         bookToCreate.setChangeDate(LocalDate.now());
 
-        Book createdBook = bookRepository.save(bookToCreate);
+        bookRepository.save(bookToCreate);
 
         String createdMessage = "Livro alterado com sucesso.";
 
@@ -162,13 +158,11 @@ public class BookService {
         }
     }
 
-    public boolean verifyByPublisher(Long id) {
+    public void verifyByPublisher(Long id) {
         Publisher publisher = publisherService.verifyAndGetIfExists(id);
         List<Book> books = bookRepository.findByPublisher(publisher);
         if(books.size() > 0) {
             throw new PublisherIsNotPossibleToUpdateException("Editora contém livros registrdos. Por favor, os delete antes.");
-        } else {
-            return true;
         }
     }
 

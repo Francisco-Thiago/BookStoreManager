@@ -2,7 +2,6 @@ package com.franciscothiago.bookstoremanager.repository;
 
 import com.franciscothiago.bookstoremanager.enums.Role;
 import com.franciscothiago.bookstoremanager.model.User;
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -15,8 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByRole(Role role);
 
     Optional<User> findByEmail(String email);
-
-    Optional<User> findByIdOrEmailOrUsername(Long id, String email, String username);
 
     Optional<User> findByIdOrEmail(Long id, String email);
 }

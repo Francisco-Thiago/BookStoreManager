@@ -8,8 +8,4 @@ public class RoleNotAllowedException extends RuntimeException {
         super(message);
     }
 
-    public RoleNotAllowedException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
 }

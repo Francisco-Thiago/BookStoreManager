@@ -1,7 +1,6 @@
 package com.franciscothiago.bookstoremanager.service;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +13,8 @@ import java.util.Map;
 import java.util.function.Function;
 @Component
 public class JwtTokenManager {
-    private Long jwtTokenValidity;
-    private String secret;
+    private final Long jwtTokenValidity;
+    private final String secret;
 
     public JwtTokenManager(
             @Value("${jwt.validity}") Long jwtTokenValidity,

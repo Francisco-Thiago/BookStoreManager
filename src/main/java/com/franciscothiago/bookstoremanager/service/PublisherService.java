@@ -9,7 +9,6 @@ import com.franciscothiago.bookstoremanager.exception.UpdateHasNoChangesExceptio
 import com.franciscothiago.bookstoremanager.mapper.PublisherMapper;
 import com.franciscothiago.bookstoremanager.model.Publisher;
 import com.franciscothiago.bookstoremanager.repository.PublisherRepository;
-import com.franciscothiago.bookstoremanager.utils.StringPatterns;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -25,15 +24,12 @@ public class PublisherService {
 
     private final PublisherRepository publisherRepository;
 
-    private final StringPatterns stringPatterns;
-
     private final BookService bookService;
 
     @Autowired
     @Lazy
-    public PublisherService(PublisherRepository publisherRepository, StringPatterns stringPatterns, BookService bookService) {
+    public PublisherService(PublisherRepository publisherRepository, BookService bookService) {
         this.publisherRepository = publisherRepository;
-        this.stringPatterns = stringPatterns;
         this.bookService = bookService;
     }
 
@@ -67,7 +63,7 @@ public class PublisherService {
         Publisher publisherToCreate = publisherMapper.toModel(publisherRequestDTO);
         publisherToCreate.setRegistrationDate(foundPublisher.getRegistrationDate());
         checkForChangesToUpdate(foundPublisher, publisherToCreate);
-        Publisher createdPublisher = publisherRepository.save(publisherToCreate);
+        publisherRepository.save(publisherToCreate);
 
         String createdMessage = "Editora atualizada com sucesso!";
 
