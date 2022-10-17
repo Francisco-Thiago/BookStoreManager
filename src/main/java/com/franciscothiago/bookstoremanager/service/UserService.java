@@ -130,12 +130,8 @@ public class UserService {
                 .orElseThrow(() -> new InvalidStringException(String.format("Usuário com id %d é inválido.", id)));
     }
 
-    public User verifyAndGetIfExistsByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserAlreadyExistsException(username));
-    }
-
     private void createDefaultUser() {
+        System.out.println(userRepository.findByRole(Role.ADMIN).size());
         if(userRepository.findByRole(Role.ADMIN).size() == 0) {
             AdminDTO userToCrete = AdminDTO.builder()
                     .address("Desconhecido")
@@ -160,37 +156,14 @@ public class UserService {
         }
     }
 
-    private void verifyIfExistsByUsername(String username) {
-        Optional<User> foundUser = userRepository.findByUsername(username);
-
-        if(foundUser.isPresent()) {
-            throw new UserAlreadyExistsException(username);
-        }
-    }
-
     private void checkForChangesToUpdate(User foundUser, User newUser) {
         if(foundUser.equals(newUser)) {
             throw new UpdateHasNoChangesException("Usuário não possui mudanças.");
         }
     }
-    private boolean verifyIfUsernameIsTheSame(String oldUsername, String newUsername) {
-        if(oldUsername == null) {
-            throw new RoleNotAllowedException("Administradores não podem modificar usuários neste endpoint.");
-        }else {
-            return oldUsername.equals(newUsername);
-        }
-    }
 
     private boolean verifyIfEmailsTheSame(String oldEmail, String newEmail) {
         return !oldEmail.equals(newEmail);
-    }
-
-    private void verifyIfExists(Long id, String email, String username) {
-        Optional<User> foundUser = userRepository.findByIdOrEmailOrUsername(id, email, username);
-
-        if(foundUser.isPresent()) {
-            throw new UserAlreadyExistsException(id, email, username);
-        }
     }
 
     private void verifyIfExists(Long id, String email) {

@@ -8,8 +8,4 @@ public class RentalUpdateIsNotPossibleException extends RuntimeException {
         super(message);
     }
 
-    public RentalUpdateIsNotPossibleException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
 }

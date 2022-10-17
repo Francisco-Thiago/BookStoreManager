@@ -16,11 +16,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationService implements UserDetailsService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    private JwtTokenManager jwtTokenManager;
+    private final JwtTokenManager jwtTokenManager;
 
     @Autowired
     @Lazy
@@ -49,7 +49,7 @@ public class AuthenticationService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("Os dados do usuário atual foram modificados. Faça login com as novas informações.", username)));
+                .orElseThrow(() -> new UsernameNotFoundException("Os dados do usuário atual foram modificados. Faça login com as novas informações."));
         return new AuthenticatedUser(
                 user.getUsername(),
                 user.getPassword(),

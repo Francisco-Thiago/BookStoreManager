@@ -8,8 +8,4 @@ public class UpdateHasNoChangesException extends RuntimeException {
         super(message);
     }
 
-    public UpdateHasNoChangesException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
 }

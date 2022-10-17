@@ -8,8 +8,4 @@ public class PublisherIsNotPossibleToUpdateException extends RuntimeException {
         super(message);
     }
 
-    public PublisherIsNotPossibleToUpdateException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
 }
