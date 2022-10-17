@@ -18,9 +18,9 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
-    private JwtTokenManager jwtTokenManager;
+    private final JwtTokenManager jwtTokenManager;
 
     @Autowired
     public JwtRequestFilter(AuthenticationService authenticationService, JwtTokenManager jwtTokenManager) {

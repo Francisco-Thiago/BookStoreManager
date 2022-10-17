@@ -34,16 +34,12 @@ public class RentalsService {
 
     private final UserService userService;
 
-    private final RentalsService rentalsService;
-
-
     @Autowired
     @Lazy
-    public RentalsService(RentalsRepository rentalsRepository, BookService bookService, UserService userService, RentalsService rentalsService) {
+    public RentalsService(RentalsRepository rentalsRepository, BookService bookService, UserService userService) {
         this.rentalsRepository = rentalsRepository;
         this.bookService = bookService;
         this.userService = userService;
-        this.rentalsService = rentalsService;
     }
 
     public Page<RentalsResponseDTO> findAll(Pageable pageable) {
@@ -175,7 +171,7 @@ public class RentalsService {
     }
 
     private void verifyUserRole(String role) {
-        if(role == Role.ADMIN.getDescription()) {
+        if(role.equals(Role.ADMIN.getDescription())) {
             throw new RoleNotAllowedException("Administradores do sistema não podem alugar livros!");
         }
     }
@@ -204,14 +200,12 @@ public class RentalsService {
         }
     }
 
-    public boolean verifyRentalsOfUsers(Long id) {
+    public void verifyRentalsOfUsers(Long id) {
         User user = userService.verifyAndGetIfExists(id);
         List<Rentals> rentals = rentalsRepository.findByUser(user);
 
         if(rentals.size() > 0) {
             throw new RentalUpdateIsNotPossibleException("Não é possível excluir este usuário. Exclua os aluguéis associados para poder realizar esta função.");
-        } else {
-            return true;
         }
     }
 

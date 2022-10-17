@@ -8,8 +8,4 @@ public class InvalidStringException extends RuntimeException{
         super(message);
     }
 
-    public InvalidStringException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
 }
