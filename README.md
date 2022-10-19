@@ -15,7 +15,7 @@ Você pode ver o projeto acessando as URLs, entretanto vale dizer que há um lim
 
 ## 📦 Desenvolvimento
 
-O projeto atualmente está em construção.
+O projeto foi encerrado.
 
 ## 🛠️ Construído com
 
